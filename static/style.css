@@ -327,3 +327,6 @@ tbody tr:hover td{background:#FAF9F6}
 .empty{text-align:center;padding:40px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--muted)}
 .empty .illus{max-width:260px;border-radius:18px}
 @media (max-width:860px){.site-head,.app-head{position:static}}
+.user-edit summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.user-edit[open] summary{padding-bottom:12px;border-bottom:1px solid #ECEAE4}
+.user-edit:target{border-color:var(--blue)}

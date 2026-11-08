@@ -530,7 +530,49 @@ def dashboard():
 def users():
     rows = db().execute("""SELECT u.*, o.name AS office_name FROM users u
                            LEFT JOIN offices o ON o.id=u.office_id ORDER BY u.id""").fetchall()
-    return render_template("users.html", rows=rows)
+    offices_list = db().execute("SELECT id, name, city FROM offices ORDER BY name").fetchall()
+    return render_template("users.html", rows=rows, offices=offices_list)
+
+
+@app.route("/users/<int:uid>/update", methods=["POST"])
+@require("manage_users")
+def update_user(uid):
+    """تعديل حساب من مدير النظام: الاسم، اسم المستخدم، الجوال، الدور، المكتب، وكلمة مرور جديدة اختيارية."""
+    u = db().execute("SELECT * FROM users WHERE id=?", (uid,)).fetchone()
+    if not u:
+        abort(404)
+    f = request.form
+    full_name, username = f.get("full_name", "").strip(), f.get("username", "").strip()
+    phone, role, password = f.get("phone", "").strip(), f.get("role", u["role"]), f.get("password", "")
+    office_id = int(f["office_id"]) if role == "office" and f.get("office_id") else None
+    error = None
+    if not full_name or not username:
+        error = "الاسم واسم المستخدم مطلوبان"
+    elif role not in ROLES:
+        error = "دور غير معروف"
+    elif uid == session["user_id"] and role != u["role"]:
+        error = "لا يمكنك تغيير دور حسابك أنت، حتى لا تفقد صلاحية الإدارة"
+    elif role == "office" and not office_id:
+        error = "حساب المكتب الهندسي يجب أن يرتبط بمكتب من القائمة"
+    elif phone and not (len(phone) == 10 and phone.startswith("05") and phone.isdigit()):
+        error = "رقم الجوال يجب أن يكون 10 أرقام ويبدأ بـ 05"
+    elif password and len(password) < 6:
+        error = "كلمة المرور 6 أحرف على الأقل"
+    if error:
+        flash(error, "error")
+        return redirect(url_for("users"))
+    try:
+        db().execute("UPDATE users SET full_name=?, username=?, phone=?, role=?, office_id=? WHERE id=?",
+                     (full_name, username, phone, role, office_id, uid))
+        if password:
+            db().execute("UPDATE users SET password=? WHERE id=?", (generate_password_hash(password), uid))
+        db().commit()
+    except database.IntegrityError:
+        db().rollback()
+        flash("اسم المستخدم مستخدم لحساب آخر", "error")
+        return redirect(url_for("users"))
+    flash(f"تم تحديث حساب {full_name}", "ok")
+    return redirect(url_for("users"))
 
 
 @app.errorhandler(403)
