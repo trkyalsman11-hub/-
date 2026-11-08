@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الجوال: الرئيسية</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 1700px; box-sizing: border-box; overflow: hidden; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 15px; line-height: 1.7; display: flex; flex-direction: column;">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E0DA; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
+    <span style="display: flex; align-items: center; gap: 8px;"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0F1E33"></rect><path d="M10 30V10h20v20h-7" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"></path><path d="M10 19h9" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"></path><path d="M23 30a9 9 0 0 0-9-9" stroke="#E8833A" stroke-width="2.6" fill="none" stroke-linecap="round"></path></svg><b style="font-family: Alexandria, sans-serif; font-size: 18px;">بناء وتأثيث</b></span>
+    <button type="button" aria-label="القائمة" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid #E2E0DA; background: #FFFFFF; display: grid; place-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F1E33" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+  </header>
+  <section style="padding: 24px 16px; display: flex; flex-direction: column; gap: 16px;">
+    <h1 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 32px; line-height: 1.3;">من مخطط الأرض إلى مفتاح البيت</h1>
+    <p style="margin: 0; color: #3B4250;">نربطك بالمكتب الهندسي والمقاول المناسبين، برقم طلب واحد وتحديثات على واتساب.</p>
+    <a href="MobileRequest.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 14px; background: #1F4FA3; color: #FFFFFF; font-weight: 600; font-size: 16px; text-decoration: none;">ابدأ طلبك مجانًا</a>
+    <a href="MobileTrack.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 14px; border: 1px solid #C9CEDA; background: #FFFFFF; color: #0F1E33; font-weight: 600; text-decoration: none;">تتبع طلبًا</a>
+    <dc-import name="Illus" kind="owner" hint-size="100%,246px"></dc-import>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center;">
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 14px; padding: 10px 4px;"><b style="font-family: Alexandria, sans-serif; font-size: 22px;">10</b><div style="font-size: 12px; color: #5E6470;">مكاتب معتمدة</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 14px; padding: 10px 4px;"><b style="font-family: Alexandria, sans-serif; font-size: 22px;">3</b><div style="font-size: 12px; color: #5E6470;">ترشيحات لطلبك</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 14px; padding: 10px 4px;"><b style="font-family: Alexandria, sans-serif; font-size: 22px;">48س</b><div style="font-size: 12px; color: #5E6470;">للرد بالعرض</div></div>
+    </div>
+  </section>
+  <section style="padding: 8px 16px 24px; display: flex; flex-direction: column; gap: 12px;">
+    <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">منصة واحدة، أربعة أدوار</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 16px; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 6px;"><dc-import name="Illus" kind="owner" hint-size="100%,112px"></dc-import><b style="padding: 0 4px;">المالك</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 16px; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 6px;"><dc-import name="Illus" kind="office" hint-size="100%,112px"></dc-import><b style="padding: 0 4px;">المكتب الهندسي</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 16px; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 6px;"><dc-import name="Illus" kind="contractor" hint-size="100%,112px"></dc-import><b style="padding: 0 4px;">المقاول</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 16px; padding: 8px 8px 12px; display: flex; flex-direction: column; gap: 6px;"><dc-import name="Illus" kind="developer" hint-size="100%,112px"></dc-import><b style="padding: 0 4px;">المطور العقاري</b></div>
+    </div>
+  </section>
+  <section style="background: #0F1E33; color: #FFFFFF; padding: 28px 16px; display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">رحلة المشروع</h2>
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+      <li style="display: flex; gap: 12px;"><span style="font-family: 'IBM Plex Mono', monospace; color: #F2A766;">01</span><span><b>كراسة المتطلبات</b><br><span style="color: #AEB8C8; font-size: 14px;">المساحة والموقع والميزانية والطراز</span></span></li>
+      <li style="display: flex; gap: 12px;"><span style="font-family: 'IBM Plex Mono', monospace; color: #8FB0E3;">02</span><span><b>المكتب الهندسي</b><br><span style="color: #AEB8C8; font-size: 14px;">أفضل 3 مكاتب بنسبة توافق</span></span></li>
+      <li style="display: flex; gap: 12px;"><span style="font-family: 'IBM Plex Mono', monospace; color: #8FB0E3;">03</span><span><b>المقاولون والإشراف</b><br><span style="color: #AEB8C8; font-size: 14px;">عروض المقاولين على المخططات</span></span></li>
+      <li style="display: flex; gap: 12px;"><span style="font-family: 'IBM Plex Mono', monospace; color: #8FB0E3;">04</span><span><b>الربط التمويلي</b><br><span style="color: #AEB8C8; font-size: 14px;">العقود للبنك أو شركة التمويل</span></span></li>
+      <li style="display: flex; gap: 12px;"><span style="font-family: 'IBM Plex Mono', monospace; color: #8FB0E3;">05</span><span><b>التأثيث</b><br><span style="color: #AEB8C8; font-size: 14px;">متاجر الأثاث الشريكة</span></span></li>
+    </ol>
+  </section>
+  <section style="padding: 24px 16px; display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">مكاتب بأعلى تقييم</h2>
+    <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center;"><span><b>المباركية للاستشارات الهندسية</b><br><span style="font-size: 13px; color: #5E6470;">الرياض · <span style="color: #B76516;">★</span> 5.0</span></span><b style="color: #1F4FA3;">320</b></div>
+    <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 16px; padding: 14px; display: flex; justify-content: space-between; align-items: center;"><span><b>مكتب المنصور للهندسة والعمران</b><br><span style="font-size: 13px; color: #5E6470;">شقراء · <span style="color: #B76516;">★</span> 5.0</span></span><b style="color: #1F4FA3;">280</b></div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

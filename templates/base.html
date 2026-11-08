@@ -1,0 +1,78 @@
+{% from '_ui.html' import logo with context %}<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}بناء وتأثيث · من المخطط إلى المفتاح{% endblock %}</title>
+<meta name="description" content="منصة تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري، من كراسة المتطلبات حتى التأثيث.">
+<meta name="theme-color" content="#0F1E33">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230F1E33'/%3E%3Cpath d='M10 30V10h20v20h-7M10 19h9' stroke='%23fff' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M23 30a9 9 0 0 0-9-9' stroke='%23E8833A' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+{% set ep = request.endpoint %}
+{% set user = current_user() if session.user_id else None %}
+{% macro nav_link(endpoint, label, eps=None) -%}
+<a href="{{ url_for(endpoint) }}"{% if ep in (eps or [endpoint]) %} aria-current="page"{% endif %}>{{ label }}</a>
+{%- endmacro %}
+{% block header %}
+{% if user %}
+<header class="app-head"><div class="wrap in">
+  {{ logo(dark=false, tagline=false, size=36) }}
+  <nav class="nav" aria-label="قائمة المنصة">
+    {{ nav_link('home', 'لوحتي' if session.role in ('owner','client') else 'الطلبات', ['home','request_detail']) }}
+    {% if can('create') %}{{ nav_link('new_request', 'طلب جديد') }}{% endif %}
+    {{ nav_link('offices', 'المكاتب الهندسية') }}
+    {% if can('dashboard') %}{{ nav_link('dashboard', 'المؤشرات') }}{% endif %}
+    {% if can('manage_users') %}{{ nav_link('users', 'المستخدمون') }}{% endif %}
+    {{ nav_link('track', 'تتبع طلب') }}
+  </nav>
+  <div class="head-actions">
+    <span class="acct"><span><b>{{ user.full_name }}</b><small>{{ ROLES[session.role] }}</small></span><i aria-hidden="true">{{ user.full_name[:1] }}</i></span>
+    <a class="out" href="{{ url_for('logout') }}">خروج</a>
+  </div>
+</div></header>
+{% else %}
+<header class="site-head"><div class="wrap in">
+  {{ logo() }}
+  <nav class="nav" aria-label="القائمة الرئيسية">
+    {{ nav_link('index', 'الرئيسية') }}
+    <a href="{{ url_for('index') }}#journey">رحلة المشروع</a>
+    {{ nav_link('offices', 'المكاتب الهندسية') }}
+    {{ nav_link('track', 'تتبع طلب') }}
+  </nav>
+  <div class="head-actions">
+    <a class="btn ghost sm" href="{{ url_for('login') }}">دخول</a>
+    <a class="btn sm" href="{{ url_for('register') }}">ابدأ طلبك</a>
+  </div>
+</div></header>
+{% endif %}
+{% endblock %}
+<main id="main">
+{% block flashes %}{% set msgs = get_flashed_messages(with_categories=true) %}{% if msgs %}<div class="wrap" style="padding-top:20px;display:grid;gap:10px">{% for cat,msg in msgs %}<div class="flash {{cat}}" role="{{ 'alert' if cat=='error' else 'status' }}">{{msg}}</div>{% endfor %}</div>{% endif %}{% endblock %}
+{% block main %}<div class="wrap page{% block page_class %}{% endblock %}">{% block content %}{% endblock %}</div>{% endblock %}
+</main>
+{% block footer %}
+{% if user %}
+<footer class="app-foot"><div class="wrap"><span>منصة بناء وتأثيث · من المخطط إلى المفتاح</span><span>كل تحديث على الطلب يصل للمستفيد عبر واتساب</span></div></footer>
+{% else %}
+<footer class="site-foot"><div class="wrap">
+  <div class="cols">
+    <div class="col" style="gap:14px">{{ logo(dark=false, tagline=false) }}<p style="line-height:1.8;max-width:32ch">منصة تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري، من كراسة المتطلبات حتى التأثيث.</p></div>
+    <nav class="col" aria-label="المنصة"><span class="ttl">المنصة</span><a href="{{ url_for('index') }}#journey">رحلة المشروع</a><a href="{{ url_for('offices') }}">دليل المكاتب الهندسية</a><a href="{{ url_for('track') }}">تتبع طلب</a><a href="{{ url_for('new_request') }}">طلب جديد</a></nav>
+    <nav class="col" aria-label="انضم إلينا"><span class="ttl">انضم إلينا</span><a href="{{ url_for('register', role='office') }}">تسجيل مكتب هندسي</a><a href="{{ url_for('register', role='developer') }}">تسجيل مطور عقاري</a><a href="{{ url_for('register') }}">حساب مالك</a></nav>
+    <div class="col"><span class="ttl">تواصل معنا</span><span>الجوال: <span dir="ltr">[رقم التواصل]</span></span><span>البريد: <span dir="ltr">[البريد الرسمي]</span></span><span>الرياض، المملكة العربية السعودية</span></div>
+  </div>
+  <div class="bot"><span>© {{ 2026 }} منصة بناء وتأثيث · السجل التجاري [رقم السجل]</span><span style="display:flex;gap:18px"><span>[الشروط والأحكام]</span><span>[سياسة الخصوصية]</span></span></div>
+</div></footer>
+{% endif %}
+{% endblock %}
+<script>
+/* حالة تحميل لأي إرسال، ومنع الإرسال المزدوج */
+document.addEventListener('submit',function(e){var f=e.target;if(f.method.toLowerCase()!=='post')return;var b=e.submitter||f.querySelector('button:not([type=button])');if(b){if(b.dataset.busy){e.preventDefault();return}b.dataset.busy=1;b.classList.add('loading');b.setAttribute('aria-busy','true')}});
+</script>
+{% block scripts %}{% endblock %}
+</body></html>

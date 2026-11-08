@@ -1,0 +1,31 @@
+{% extends '_auth.html' %}{% from '_ui.html' import illus with context %}
+{% block title %}حساب جديد · بناء وتأثيث{% endblock %}
+{% set sel = request.form.role or request.args.get('role') or 'owner' %}
+{% set roles = [('owner','مالك','owner'),('client','عميل','furnish'),('developer','مطور عقاري','developer'),('office','مكتب هندسي','office')] %}
+{% block form %}
+<form method="post" class="stack" id="regForm">
+  <h1 style="font-size:30px">من أنت في المشروع؟</h1>
+  <fieldset><legend class="sr-only">نوع الحساب</legend>
+  <div class="picks roles">
+    {% for k, label, kind in roles %}
+    <label class="pick"><input type="radio" name="role" value="{{ k }}" {{ 'checked' if sel==k }} required>{{ illus(kind) }}<span>{{ label }}</span></label>
+    {% endfor %}
+  </div></fieldset>
+  <div id="offBox" {{ '' if sel=='office' else 'hidden' }}><label for="office_id">اسم المكتب</label><select id="office_id" name="office_id"><option value="">اختر مكتبك من القائمة</option>{% for o in offices %}<option value="{{o.id}}" {{ 'selected' if request.form.office_id==o.id|string }}>{{o.name}} ({{o.city}})</option>{% endfor %}</select>
+    <p class="hint">يظهر حساب المكتب للطلبات المُسندة إليه فقط.</p></div>
+  <div class="form-grid">
+    <div><label for="full_name">الاسم الكامل</label><input id="full_name" name="full_name" required autocomplete="name" value="{{ request.form.full_name }}"></div>
+    <div><label for="phone">الجوال (للإشعارات)</label><input id="phone" name="phone" placeholder="05xxxxxxxx" required pattern="05[0-9]{8}" title="رقم سعودي من 10 أرقام يبدأ بـ 05" dir="ltr" inputmode="tel" autocomplete="tel" value="{{ request.form.phone }}"></div>
+    <div><label for="username">اسم المستخدم</label><input id="username" name="username" required dir="ltr" autocomplete="username" value="{{ request.form.username }}"></div>
+    <div><label for="password">كلمة المرور</label><input id="password" type="password" name="password" minlength="6" required dir="ltr" autocomplete="new-password"><p class="hint">6 أحرف على الأقل</p></div>
+  </div>
+  <button class="btn orange lg block">إنشاء الحساب</button>
+  <p class="muted">رقم الجوال يُستخدم لإرسال تحديثات الطلبات عبر واتساب.</p>
+</form>
+{% endblock %}
+{% block aside %}{{ illus('office' if sel=='office' else 'developer' if sel=='developer' else 'owner') }}<h2>كل طرف يرى ما يخصه</h2><p>المالك يتابع طلباته، والمكتب يستقبل الطلبات المُسندة إليه، والمطور يدير الطلبات المفتوحة.</p>{% endblock %}
+{% block scripts %}<script>
+(function(){var f=document.getElementById('regForm'),box=document.getElementById('offBox'),sel=document.getElementById('office_id');
+function sync(){var r=f.querySelector('input[name=role]:checked');var on=r&&r.value==='office';box.hidden=!on;sel.required=on}
+f.addEventListener('change',function(e){if(e.target.name==='role')sync()});sync()})();
+</script>{% endblock %}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>دليل المكاتب الهندسية</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F4F3EF} a{color:#1F4FA3}a:hover{color:#163B7A}
+.bp{background-color:#1F4FA3;background-image:linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);background-size:16px 16px}
+:focus-visible{outline:3px solid #E8833A;outline-offset:2px}
+a,button,input,select,textarea{transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+a[href],button,select{cursor:pointer}
+a[href^="OfficeProfile"]:hover{border-color:#1F4FA3!important;box-shadow:0 14px 28px -18px rgba(15,30,51,.4)}
+select:focus{border-color:#1F4FA3!important;box-shadow:0 0 0 3px #E7EEF9;outline:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 100%; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; font-size: 16px; line-height: 1.7;">
+  <dc-import name="Header" active="offices" hint-size="100%,84px"></dc-import>
+
+  <section style="max-width: 1200px; margin: 0 auto; padding: 56px 24px 24px; display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: flex-end;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-weight: 600; color: #A84F12;">دليل المكاتب</div>
+      <h1 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 42px; line-height: 1.3;">المكاتب الهندسية</h1>
+      <p style="margin: 0; color: #5E6470;">{{count}} مكتب · الأسعار للمتر المربع من مساحة التصميم</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;">
+      <div role="group" aria-label="المدينة" style="display: flex; gap: 4px; padding: 4px; background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 14px;">
+        <sc-for list="{{cities}}" as="c" hint-placeholder-count="3">
+          <button type="button" onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="{{c.style}}">{{c.label}}</button>
+        </sc-for>
+      </div>
+      <div style="min-width: 190px;"><label for="o_sort" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">الترتيب</label>
+        <select id="o_sort" onChange="{{setSort}}" style="width: 100%; min-height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit; color: inherit;"><option value="rating">الأعلى تقييمًا</option><option value="price">الأقل سعرًا</option></select></div>
+    </div>
+  </section>
+
+  <section style="max-width: 1200px; margin: 0 auto; padding: 12px 24px 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px;">
+    <sc-for list="{{offices}}" as="o" hint-placeholder-count="10">
+      <a href="OfficeProfile.dc.html" style="text-decoration: none; color: #0F1E33; background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+        <div class="bp" style="height: 96px; position: relative; display: flex; align-items: flex-end; padding: 14px;">
+          <span style="width: 52px; height: 52px; border-radius: 14px; background: #FFFFFF; color: #1F4FA3; display: grid; place-items: center; font-family: Alexandria, sans-serif; font-weight: 700; font-size: 22px; box-shadow: 0 6px 16px -8px rgba(0,0,0,.4);">{{o.initial}}</span>
+          <span style="position: absolute; top: 12px; left: 12px; font-size: 12.5px; padding: 2px 10px; border-radius: 999px; background: rgba(255,255,255,.92); color: #1F4FA3; font-weight: 600;">{{o.city}}</span>
+        </div>
+        <div style="padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1;">
+          <b style="font-size: 17px; line-height: 1.5;">{{o.name}}</b>
+          <span style="color: #B76516; letter-spacing: 1px;">{{o.stars}} <span style="color: #5E6470; letter-spacing: 0;">{{o.rating}}</span></span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; border-top: 1px solid #ECEAE4;">
+            <span style="font-family: Alexandria, sans-serif; font-weight: 600; font-size: 20px; color: #1F4FA3;">{{o.price}} <small style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 13px; color: #5E6470; font-weight: 400;">ريال/م²</small></span>
+            <span style="font-weight: 600; font-size: 14px; color: #1F4FA3;">عرض الملف ←</span>
+          </div>
+        </div>
+      </a>
+    </sc-for>
+  </section>
+
+  <dc-import name="Footer" hint-size="100%,340px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { city: '', sort: 'rating' }; }
+  renderVals() {
+    const data = [
+      ['المباركية للاستشارات الهندسية', 'الرياض', 320, 5],
+      ['مكتب مشعل للخدمات الهندسية', 'الرياض', 330, 4.5],
+      ['مكتب المنصور للهندسة والعمران', 'شقراء', 280, 5],
+      ['الفهيد للخدمات الهندسية', 'شقراء', 260, 4.3],
+      ['الاعمار والبناء للخدمات الهندسية', 'الرياض', 400, 4.4],
+      ['مشرف المشرف للإشراف الهندسي', 'شقراء', 325, 4.2],
+      ['ميم صاد للخدمات الهندسية', 'الرياض', 380, 4],
+      ['حاء قاف للإشراف الهندسي', 'الرياض', 450, 3.9],
+      ['ميم نون للإشراف الهندسي', 'شقراء', 220, 3.7],
+      ['الغالية للخدمات الهندسية', 'الرياض', 410, 4.8]
+    ];
+    const { city, sort } = this.state;
+    const list = data.filter((d) => !city || d[1] === city)
+      .sort((a, b) => sort === 'price' ? a[2] - b[2] : b[3] - a[3])
+      .map(([name, c, price, rating]) => {
+        const r = Math.round(rating);
+        const clean = name.replace(/^مكتب /, '');
+        return { name, city: c, price, rating: rating.toFixed(1), stars: '★'.repeat(r) + '☆'.repeat(5 - r), initial: clean.replace(/^ال/, '').charAt(0) };
+      });
+    const base = 'min-height:40px;padding:0 16px;border-radius:10px;border:0;font:inherit;font-size:15px;cursor:pointer;';
+    return {
+      offices: list,
+      count: list.length,
+      cities: [['', 'الكل'], ['الرياض', 'الرياض'], ['شقراء', 'شقراء']].map(([v, label]) => ({
+        label, on: city === v ? 'true' : 'false',
+        style: base + (city === v ? 'background:#0F1E33;color:#FFFFFF;font-weight:600;' : 'background:transparent;color:#3B4250;'),
+        pick: () => this.setState({ city: v })
+      })),
+      setSort: (e) => this.setState({ sort: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>

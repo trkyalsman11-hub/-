@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>لوحة مدير النظام</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>body{margin:0;background:#F4F3EF} a{color:#1F4FA3}a:hover{color:#163B7A}
+:focus-visible{outline:3px solid #E8833A;outline-offset:2px}
+a,button{transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease,filter .2s ease}
+a[href],button{cursor:pointer}
+button:hover,a[href]:hover{filter:brightness(1.06)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 100%; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; font-size: 16px; line-height: 1.7;">
+  <dc-import name="AppBar" role="admin" active="kpi" hint-size="100%,72px"></dc-import>
+
+  <section style="max-width: 1240px; margin: 0 auto; padding: 32px 24px 72px; display: flex; flex-direction: column; gap: 22px;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px;">
+      <div><div style="color: #5E6470;">مؤشرات الخطة الاستراتيجية · المرحلة 3: تجربة الرياض</div><h1 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 32px;">لوحة المؤشرات</h1></div>
+      <span style="font-size: 13px; padding: 4px 12px; border-radius: 999px; background: #FFFFFF; border: 1px dashed #C9CEDA; color: #5E6470;">أرقام توضيحية للتصميم</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 14px; color: #5E6470;">ملاك مسجّلون</span><b style="font-family: Alexandria, sans-serif; font-size: 32px;">312 <small style="font-size: 15px; color: #5E6470; font-weight: 400;">/ 500</small></b><span style="height: 8px; border-radius: 6px; background: #E2E0DA;"><span style="display: block; width: 62%; height: 100%; border-radius: 6px; background: #1F4FA3;"></span></span><span style="font-size: 13px; color: #5E6470;">مستهدف الشهر 9</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 14px; color: #5E6470;">عقود معتمدة</span><b style="font-family: Alexandria, sans-serif; font-size: 32px;">6 <small style="font-size: 15px; color: #5E6470; font-weight: 400;">/ 15</small></b><span style="height: 8px; border-radius: 6px; background: #E2E0DA;"><span style="display: block; width: 40%; height: 100%; border-radius: 6px; background: #E8833A;"></span></span><span style="font-size: 13px; color: #5E6470;">نقطة قرار الشهر 12</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 14px; color: #5E6470;">الرد خلال 48 ساعة</span><b style="font-family: Alexandria, sans-serif; font-size: 32px; color: #1F7A4D;">94%</b><span style="font-size: 13px; color: #5E6470;">من طلبات التسعير هذا الشهر</span></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 14px; color: #5E6470;">متوسط التقييم · النزاعات</span><b style="font-family: Alexandria, sans-serif; font-size: 32px;">4.6 <small style="font-size: 15px; color: #5E6470; font-weight: 400;">· 2%</small></b><span style="font-size: 13px; color: #5E6470;">المستهدف 4 فأكثر · أقل من 5%</span></div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: stretch;">
+      <div style="flex: 1 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+        <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 20px;">قمع التحويل</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: grid; grid-template-columns: 110px 1fr 70px; gap: 12px; align-items: center;"><span>مسجّلون</span><span style="height: 30px; border-radius: 8px; background: #1F4FA3; width: 100%;"></span><b style="font-family: 'IBM Plex Mono', monospace;">312</b></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr 70px; gap: 12px; align-items: center;"><span>طلب تسعير</span><span style="height: 30px; border-radius: 8px; background: #1F4FA3; width: 23%;"></span><b style="font-family: 'IBM Plex Mono', monospace;">72</b></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr 70px; gap: 12px; align-items: center;"><span>تفاوض</span><span style="height: 30px; border-radius: 8px; background: #5C80C2; width: 7%;"></span><b style="font-family: 'IBM Plex Mono', monospace;">22</b></div>
+          <div style="display: grid; grid-template-columns: 110px 1fr 70px; gap: 12px; align-items: center;"><span>عقد</span><span style="height: 30px; border-radius: 8px; background: #E8833A; width: 2%;"></span><b style="font-family: 'IBM Plex Mono', monospace;">6</b></div>
+        </div>
+        <p style="margin: 0; font-size: 14px; color: #5E6470;">التحويل إلى طلب تسعير 23% (المستهدف 20% فأكثر).</p>
+      </div>
+      <div style="flex: 1 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+        <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 20px;">الطلبات حسب الحالة</h2>
+        <sc-for list="{{statuses}}" as="s" hint-placeholder-count="8">
+          <div style="display: grid; grid-template-columns: 160px 1fr 32px; gap: 10px; align-items: center; font-size: 15px;"><span style="color: #3B4250;">{{s.label}}</span><span style="height: 10px; border-radius: 6px; background: #E7EEF9;"><span style="{{s.bar}}"></span></span><b style="font-family: 'IBM Plex Mono', monospace;">{{s.n}}</b></div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap;"><h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 20px;">طلبات تحتاج إسناد</h2><span style="font-size: 14px; color: #5E6470;">لم يختر المالك مكتبًا خلال 24 ساعة</span></div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+        <div style="border: 1px solid #E2E0DA; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px;"><div style="display: flex; justify-content: space-between;"><b>استراحة · الرياض</b><span style="font-family: 'IBM Plex Mono', monospace; color: #8A4B12; font-size: 13px; direction: ltr;">BT-2026-00011</span></div><span style="font-size: 14px; color: #5E6470;">الترشيح الأول: المباركية للاستشارات الهندسية · 94%</span><div style="display: flex; gap: 8px;"><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #1F4FA3; color: #FFFFFF; font: 600 14px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer;">إسناد للترشيح الأول</button><button type="button" style="min-height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEDA; background: #FFFFFF; font: 600 14px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer;">تواصل مع المالك</button></div></div>
+        <div style="border: 1px solid #E2E0DA; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px;"><div style="display: flex; justify-content: space-between;"><b>دوبلكس · شقراء</b><span style="font-family: 'IBM Plex Mono', monospace; color: #8A4B12; font-size: 13px; direction: ltr;">BT-2026-00012</span></div><span style="font-size: 14px; color: #5E6470;">الترشيح الأول: مكتب المنصور للهندسة والعمران · 93%</span><div style="display: flex; gap: 8px;"><button type="button" style="min-height: 42px; padding: 0 16px; border-radius: 10px; border: 0; background: #1F4FA3; color: #FFFFFF; font: 600 14px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer;">إسناد للترشيح الأول</button><button type="button" style="min-height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid #C9CEDA; background: #FFFFFF; font: 600 14px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer;">تواصل مع المالك</button></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const S = [['جديد', 9], ['قيد الدراسة', 6], ['بانتظار المكتب الهندسي', 11], ['تم تقديم عرض السعر', 8], ['معتمد', 4], ['قيد التنفيذ', 2], ['مكتمل', 3], ['ملغي', 1]];
+    const mx = Math.max(...S.map((s) => s[1]));
+    return { statuses: S.map(([label, n]) => ({ label, n, bar: 'display:block;height:100%;border-radius:6px;width:' + Math.round(n / mx * 100) + '%;background:' + (label === 'ملغي' ? '#B42318' : label === 'مكتمل' || label === 'معتمد' ? '#1F7A4D' : '#1F4FA3') + ';' })) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-11-08T10:00:00Z"},
+  "title": "تصميم موقع بناء وتأثيث",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Identity.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 1300, "title": "الهوية البصرية"},
+    "Header.dc.html": {"x": 0, "y": 1560, "w": 1440, "h": 84, "title": "مكوّن: رأس الموقع"},
+    "AppBar.dc.html": {"x": 1520, "y": 1560, "w": 1440, "h": 72, "title": "مكوّن: شريط المنصة"},
+    "Footer.dc.html": {"x": 3040, "y": 1560, "w": 1440, "h": 340, "title": "مكوّن: تذييل الموقع"},
+    "Illus.dc.html": {"x": 4560, "y": 1560, "w": 1440, "h": 340, "title": "مكوّن: رسومات الأدوار"},
+    "Main.dc.html": {"x": 0, "y": 2280, "w": 1440, "h": 3300, "title": "الرئيسية", "expand": "fill", "is_interactive": true},
+    "Services.dc.html": {"x": 1520, "y": 2280, "w": 1440, "h": 2500, "title": "الخدمات ورحلة المشروع", "expand": "fill", "is_interactive": true},
+    "Offices.dc.html": {"x": 3040, "y": 2280, "w": 1440, "h": 1900, "title": "دليل المكاتب الهندسية", "expand": "fill", "is_interactive": true},
+    "OfficeProfile.dc.html": {"x": 4560, "y": 2280, "w": 1440, "h": 2100, "title": "ملف مكتب هندسي", "expand": "fill", "is_interactive": true},
+    "About.dc.html": {"x": 6080, "y": 2280, "w": 1440, "h": 2000, "title": "من نحن وتواصل معنا", "expand": "fill", "is_interactive": true},
+    "Track.dc.html": {"x": 7600, "y": 2280, "w": 1440, "h": 1200, "title": "تتبع طلب", "expand": "fill", "is_interactive": true},
+    "Auth.dc.html": {"x": 0, "y": 5960, "w": 1440, "h": 1000, "title": "الدخول وإنشاء حساب", "expand": "fill", "is_interactive": true},
+    "NewRequest.dc.html": {"x": 1520, "y": 5960, "w": 1440, "h": 1700, "title": "طلب جديد", "expand": "fill", "is_interactive": true},
+    "OwnerDash.dc.html": {"x": 3040, "y": 5960, "w": 1440, "h": 1300, "title": "لوحة المالك", "expand": "fill", "is_interactive": true},
+    "RequestDetail.dc.html": {"x": 4560, "y": 5960, "w": 1440, "h": 2000, "title": "تفاصيل الطلب", "expand": "fill", "is_interactive": true},
+    "OfficeDash.dc.html": {"x": 6080, "y": 5960, "w": 1440, "h": 1300, "title": "لوحة المكتب الهندسي", "expand": "fill", "is_interactive": true},
+    "AdminDash.dc.html": {"x": 7600, "y": 5960, "w": 1440, "h": 1500, "title": "لوحة مدير النظام", "expand": "fill", "is_interactive": true},
+    "MobileHome.dc.html": {"x": 0, "y": 8340, "w": 390, "h": 1700, "title": "الجوال: الرئيسية"},
+    "MobileTrack.dc.html": {"x": 470, "y": 8340, "w": 390, "h": 844, "title": "الجوال: تتبع الطلب"},
+    "MobileRequest.dc.html": {"x": 940, "y": 8340, "w": 390, "h": 844, "title": "الجوال: طلب جديد"}
+  },
+  "order": ["Identity.dc.html", "Header.dc.html", "AppBar.dc.html", "Footer.dc.html", "Illus.dc.html", "Main.dc.html", "Services.dc.html", "Offices.dc.html", "OfficeProfile.dc.html", "About.dc.html", "Track.dc.html", "Auth.dc.html", "NewRequest.dc.html", "OwnerDash.dc.html", "RequestDetail.dc.html", "OfficeDash.dc.html", "AdminDash.dc.html", "MobileHome.dc.html", "MobileTrack.dc.html", "MobileRequest.dc.html"],
+  "notes": {
+    "t_id": {"x": 0, "y": -300, "text": "الهوية البصرية", "kind": "title1", "maxW": 1440},
+    "t_cmp": {"x": 0, "y": 1320, "text": "المكونات المشتركة", "kind": "title1", "maxW": 6000},
+    "t_pub": {"x": 0, "y": 2010, "text": "الموقع العام", "kind": "title1", "maxW": 9040},
+    "t_app": {"x": 0, "y": 5690, "text": "منصة الطلبات حسب الدور", "kind": "title1", "maxW": 9040},
+    "t_mob": {"x": 0, "y": 8070, "text": "نسخة الجوال", "kind": "title1", "maxW": 1330},
+    "n_ph": {"x": 1520, "y": 0, "w": 420, "text": "ما يحتاج تعبئة قبل الإطلاق:\n• رقم التواصل والبريد الرسمي\n• السجل التجاري\n• صور أعمال المكاتب\n• نصوص الشروط والخصوصية\nكل نص بين [ ] في التصميم مكان لمعلومة حقيقية.", "fill": "orange", "size": "m"}
+  },
+  "designSystems": []
+}

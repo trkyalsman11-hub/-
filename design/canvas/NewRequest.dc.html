@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>طلب جديد</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>body{margin:0;background:#F4F3EF} a{color:#1F4FA3}a:hover{color:#163B7A}
+:focus-visible{outline:3px solid #E8833A;outline-offset:2px}
+a,button,input,select,textarea{transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease,filter .2s ease}
+a[href],button,select{cursor:pointer}
+button:hover,a[href]:hover{filter:brightness(1.06)}
+input:focus,select:focus,textarea:focus{border-color:#1F4FA3!important;box-shadow:0 0 0 3px #E7EEF9;outline:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 100%; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; font-size: 16px; line-height: 1.7;">
+  <dc-import name="AppBar" role="owner" active="new" hint-size="100%,72px"></dc-import>
+
+  <section style="max-width: 1100px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start;">
+    <div style="flex: 999 1 580px; min-width: 0; display: flex; flex-direction: column; gap: 22px;">
+      <div><div style="font-weight: 600; color: #A84F12;">كراسة المتطلبات الرقمية</div><h1 style="margin: 2px 0 0; font-family: Alexandria, sans-serif; font-size: 34px;">طلب جديد</h1></div>
+
+      <ol aria-label="خطوات الطلب" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+        <sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+          <li style="display: flex; flex-direction: column; gap: 8px;"><span style="{{s.bar}}"></span><span style="{{s.text}}">{{s.label}}</span></li>
+        </sc-for>
+      </ol>
+
+      <form style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 18px;">
+        <sc-if value="{{s1}}" hint-placeholder-val="{{ true }}">
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">ما نوع الخدمة؟</h2>
+            <div role="radiogroup" aria-label="نوع الخدمة" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+              <sc-for list="{{types}}" as="t" hint-placeholder-count="5">
+                <button type="button" role="radio" aria-checked="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+              </sc-for>
+            </div>
+            <div><label for="n_title" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">عنوان الطلب</label><input id="n_title" value="فيلا سكنية · حي النرجس" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; font: inherit;"></div>
+            <div><span style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">الطراز المعماري</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;"><span style="padding: 8px 16px; border-radius: 999px; background: #0F1E33; color: #FFFFFF; font-size: 15px;">نجدي</span><span style="padding: 8px 16px; border-radius: 999px; border: 1px solid #D6D4CD; font-size: 15px;">حديث</span><span style="padding: 8px 16px; border-radius: 999px; border: 1px solid #D6D4CD; font-size: 15px;">كلاسيكي</span><span style="padding: 8px 16px; border-radius: 999px; border: 1px solid #D6D4CD; font-size: 15px;">مودرن كلاسيك</span><span style="padding: 8px 16px; border-radius: 999px; border: 1px solid #D6D4CD; font-size: 15px;">غير محدد</span></div></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">الموقع والمساحة والميزانية</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+              <div><label for="n_city" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">المدينة</label><select id="n_city" style="width: 100%; min-height: 50px; padding: 0 12px; border-radius: 12px; border: 1px solid #D6D4CD; font: inherit; background: #FFFFFF;"><option>الرياض</option><option>شقراء</option></select></div>
+              <div><label for="n_dist" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">الحي</label><input id="n_dist" value="النرجس" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; font: inherit;"></div>
+              <div><label for="n_area" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">مساحة الأرض (م²)</label><input id="n_area" type="number" value="600" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; font: inherit;"></div>
+              <div><label for="n_budget" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">الميزانية المتوقعة (ريال)</label><input id="n_budget" type="number" value="3000000" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; font: inherit;"></div>
+            </div>
+            <div><span style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">المرفقات</span>
+              <div style="border: 2px dashed #C9CEDA; border-radius: 16px; padding: 22px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;"><span style="color: #3B4250;">صك الأرض، الكروكي، أو أي صور تساعد المكتب</span><button type="button" style="min-height: 44px; padding: 0 18px; border-radius: 12px; border: 1px solid #C9CEDA; background: #FFFFFF; font: 600 15px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer;">إرفاق ملف</button></div></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 18px;">
+            <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">المتابعة والمراجعة</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+              <div><label for="n_name" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">اسم المستفيد</label><input id="n_name" value="تركي الألمعي" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; font: inherit;"></div>
+              <div><label for="n_phone" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">جوال واتساب</label><input id="n_phone" dir="ltr" value="0551234567" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; font: 500 16px 'IBM Plex Mono', monospace;"></div>
+            </div>
+            <dl style="margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 18px; border-radius: 16px; background: #F4F3EF;">
+              <div><dt style="font-size: 13px; color: #5E6470;">الخدمة</dt><dd style="margin: 0; font-weight: 600;">{{typeLabel}}</dd></div>
+              <div><dt style="font-size: 13px; color: #5E6470;">الموقع</dt><dd style="margin: 0; font-weight: 600;">الرياض · النرجس</dd></div>
+              <div><dt style="font-size: 13px; color: #5E6470;">المساحة</dt><dd style="margin: 0; font-weight: 600;">600 م²</dd></div>
+              <div><dt style="font-size: 13px; color: #5E6470;">الميزانية</dt><dd style="margin: 0; font-weight: 600;">3,000,000 ريال</dd></div>
+            </dl>
+          </div>
+        </sc-if>
+
+        <div style="display: flex; justify-content: space-between; gap: 10px; padding-top: 8px; border-top: 1px solid #ECEAE4;">
+          <button type="button" onClick="{{back}}" style="{{backStyle}}">السابق</button>
+          <sc-if value="{{notLast}}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{next}}" style="min-height: 50px; padding: 0 28px; border-radius: 14px; border: 0; background: #1F4FA3; color: #FFFFFF; font: 600 16px 'IBM Plex Sans Arabic', sans-serif; cursor: pointer;">التالي</button></sc-if>
+          <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}"><a href="RequestDetail.dc.html" style="display: inline-flex; align-items: center; min-height: 50px; padding: 0 28px; border-radius: 14px; background: #E8833A; color: #0F1E33; font-weight: 700; text-decoration: none;">إرسال الطلب</a></sc-if>
+        </div>
+      </form>
+    </div>
+
+    <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 22px; padding: 14px 14px 20px; display: flex; flex-direction: column; gap: 12px;">
+        <dc-import name="Illus" kind="{{illus}}" hint-size="100%,200px"></dc-import>
+        <div style="padding: 0 8px;"><b style="font-family: Alexandria, sans-serif; font-size: 17px;">بعد الإرسال</b><ul style="margin: 6px 0 0; padding-right: 20px; color: #3B4250; font-size: 15px;"><li>يصلك رقم الطلب على واتساب</li><li>نرشّح لك أفضل 3 مكاتب فورًا</li><li>المكتب يرد بعرضه خلال 48 ساعة</li></ul></div>
+      </div>
+      <p style="margin: 0; font-size: 14px; color: #5E6470;">يُحفظ الطلب كمسودة تلقائيًا، وتقدر تكمله لاحقًا.</p>
+    </aside>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { step: 1, type: 'design' }; }
+  renderVals() {
+    const { step, type } = this.state;
+    const T = [['design', 'تصميم هندسي', 'office'], ['super', 'إشراف هندسي', 'office'], ['build', 'مقاولات', 'contractor'], ['furnish', 'تأثيث وديكور', 'furnish'], ['dev', 'تطوير عقاري', 'developer']];
+    const cur = T.find((t) => t[0] === type);
+    return {
+      s1: step === 1, s2: step === 2, s3: step === 3, notLast: step < 3,
+      steps: ['نوع الخدمة', 'الموقع والميزانية', 'المتابعة والمراجعة'].map((label, i) => ({
+        label,
+        bar: 'display:block;height:6px;border-radius:4px;background:' + (i < step ? '#1F4FA3' : '#DCDAD3') + ';',
+        text: 'font-size:14px;' + (i + 1 === step ? 'font-weight:600;color:#0F1E33;' : 'color:#5E6470;')
+      })),
+      types: T.map(([k, label]) => ({
+        label, on: k === type ? 'true' : 'false', pick: () => this.setState({ type: k }),
+        style: 'min-height:56px;padding:0 14px;border-radius:14px;font:inherit;font-size:15px;cursor:pointer;' + (k === type ? 'border:2px solid #1F4FA3;background:#E7EEF9;color:#163B7A;font-weight:600;' : 'border:1px solid #D6D4CD;background:#FFFFFF;color:#0F1E33;')
+      })),
+      typeLabel: cur[1], illus: cur[2],
+      next: () => this.setState({ step: Math.min(3, step + 1) }),
+      back: () => this.setState({ step: Math.max(1, step - 1) }),
+      backStyle: 'min-height:50px;padding:0 22px;border-radius:14px;border:1px solid #C9CEDA;background:#FFFFFF;color:#0F1E33;font:600 16px \'IBM Plex Sans Arabic\',sans-serif;cursor:pointer;' + (step === 1 ? 'visibility:hidden;' : '')
+    };
+  }
+}
+</script>
+</body>
+</html>

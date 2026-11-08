@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الدخول وإنشاء حساب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>body{margin:0;background:#F4F3EF} a{color:#1F4FA3}a:hover{color:#163B7A}
+:focus-visible{outline:3px solid #E8833A;outline-offset:2px}
+a,button,input,select,textarea{transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease,filter .2s ease}
+a[href],button,select{cursor:pointer}
+a[href]:hover{filter:brightness(1.06)}
+[role="radio"]:hover{border-color:#1F4FA3!important}
+input:focus,select:focus{border-color:#1F4FA3!important;box-shadow:0 0 0 3px #E7EEF9;outline:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 100%; min-height: 1000px; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; font-size: 16px; line-height: 1.7; display: flex; flex-wrap: wrap;">
+  <section style="flex: 1 1 520px; min-width: 0; padding: 40px 24px 56px; display: flex; flex-direction: column; align-items: center;">
+    <a href="Main.dc.html" style="align-self: flex-start; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0F1E33; margin-bottom: 40px;">
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0F1E33"></rect><path d="M10 30V10h20v20h-7" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"></path><path d="M10 19h9" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"></path><path d="M23 30a9 9 0 0 0-9-9" stroke="#E8833A" stroke-width="2.6" fill="none" stroke-linecap="round"></path></svg>
+      <span style="font-family: Alexandria, sans-serif; font-weight: 700; font-size: 20px;">بناء وتأثيث</span>
+    </a>
+    <div style="width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 20px;">
+      <div role="tablist" aria-label="نوع العملية" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 14px;">
+        <button type="button" role="tab" aria-selected="{{loginSel}}" onClick="{{toLogin}}" style="{{loginTab}}">دخول</button>
+        <button type="button" role="tab" aria-selected="{{regSel}}" onClick="{{toReg}}" style="{{regTab}}">حساب جديد</button>
+      </div>
+
+      <sc-if value="{{isLogin}}" hint-placeholder-val="{{ true }}">
+        <form style="display: flex; flex-direction: column; gap: 14px;">
+          <h1 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 30px;">أهلًا بعودتك</h1>
+          <div><label for="a_user" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">اسم المستخدم أو الجوال</label><input id="a_user" dir="ltr" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit;"></div>
+          <div><label for="a_pass" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">كلمة المرور</label><input id="a_pass" type="password" dir="ltr" style="width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit;"></div>
+          <a href="OwnerDash.dc.html" style="display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 14px; background: #1F4FA3; color: #FFFFFF; font-weight: 600; font-size: 17px; text-decoration: none;">دخول</a>
+          <div style="display: flex; justify-content: space-between; font-size: 14px;"><a href="Auth.dc.html">نسيت كلمة المرور؟</a><span style="color: #5E6470;">معاينة اللوحات: <a href="OfficeDash.dc.html">مكتب</a> · <a href="AdminDash.dc.html">مدير</a></span></div>
+        </form>
+      </sc-if>
+
+      <sc-if value="{{isReg}}" hint-placeholder-val="{{ false }}">
+        <form style="display: flex; flex-direction: column; gap: 14px;">
+          <h1 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 30px;">من أنت في المشروع؟</h1>
+          <div role="radiogroup" aria-label="نوع الحساب" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+            <sc-for list="{{roles}}" as="r" hint-placeholder-count="4">
+              <button type="button" role="radio" aria-checked="{{r.on}}" onClick="{{r.pick}}" style="{{r.style}}">
+                <dc-import name="Illus" kind="{{r.kind}}" hint-size="100%,90px"></dc-import>
+                <b style="font-size: 15px;">{{r.label}}</b>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px;">
+            <div><label for="r_name" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">{{nameLabel}}</label><input id="r_name" style="width: 100%; box-sizing: border-box; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit;"></div>
+            <div><label for="r_phone" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">الجوال (للإشعارات)</label><input id="r_phone" dir="ltr" placeholder="05xxxxxxxx" style="width: 100%; box-sizing: border-box; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit;"></div>
+            <sc-if value="{{needsLicense}}" hint-placeholder-val="{{ false }}">
+              <div><label for="r_lic" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">رقم الترخيص أو السجل</label><input id="r_lic" dir="ltr" style="width: 100%; box-sizing: border-box; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit;"></div>
+            </sc-if>
+            <div><label for="r_pass" style="display: block; font-size: 13px; color: #5E6470; font-weight: 500; margin-bottom: 6px;">كلمة المرور</label><input id="r_pass" type="password" dir="ltr" style="width: 100%; box-sizing: border-box; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid #D6D4CD; background: #FFFFFF; font: inherit;"></div>
+          </div>
+          <a href="{{regHref}}" style="display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 14px; background: #E8833A; color: #0F1E33; font-weight: 700; font-size: 17px; text-decoration: none;">إنشاء الحساب</a>
+          <sc-if value="{{needsLicense}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 14px; color: #5E6470;">نتحقق من الترخيص قبل ظهور منشأتك في الترشيحات.</p></sc-if>
+        </form>
+      </sc-if>
+    </div>
+  </section>
+  <aside style="flex: 1 1 460px; min-width: 0; background: #0F1E33; color: #FFFFFF; padding: 56px 48px; display: flex; flex-direction: column; justify-content: center; gap: 22px;">
+    <div style="max-width: 520px; width: 100%; align-self: center; display: flex; flex-direction: column; gap: 22px;">
+      <dc-import name="Illus" kind="{{asideKind}}" hint-size="100%,330px"></dc-import>
+      <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 28px; line-height: 1.4;">{{asideTitle}}</h2>
+      <p style="margin: 0; color: #AEB8C8; font-size: 17px;">{{asideText}}</p>
+    </div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { mode: 'login', role: 'owner' }; }
+  renderVals() {
+    const { mode, role } = this.state;
+    const tab = (on) => 'min-height:44px;border-radius:10px;border:0;font:inherit;font-size:15px;cursor:pointer;' + (on ? 'background:#0F1E33;color:#FFFFFF;font-weight:600;' : 'background:transparent;color:#3B4250;');
+    const R = {
+      owner: { label: 'مالك', name: 'الاسم الكامل', title: 'بيتك يبدأ من كراسة متطلبات واحدة', text: 'اكتب ما تريد، ونرشّح لك أفضل 3 مكاتب، وتابع كل مرحلة برقم طلبك.', dash: 'OwnerDash.dc.html' },
+      office: { label: 'مكتب هندسي', name: 'اسم المكتب', title: 'طلبات جاهزة على طاولة الرسم', text: 'تصلك الطلبات بمساحتها وميزانيتها وطرازها، وتحدّث المراحل بضغطة.', dash: 'OfficeDash.dc.html' },
+      contractor: { label: 'مقاول', name: 'اسم المؤسسة', title: 'مخططات معتمدة، ومنافسة عادلة', text: 'اطّلع على المخططات المعتمدة وقدّم عرضك، ودفعاتك تُصرف بعد اعتماد المشرف.', dash: 'OfficeDash.dc.html' },
+      developer: { label: 'مطور عقاري', name: 'اسم الشركة', title: 'مشاريعك من لوحة واحدة', text: 'أسند الطلبات للمكاتب وتابع الحالات حتى التسليم.', dash: 'AdminDash.dc.html' }
+    };
+    const cur = R[role];
+    const isLogin = mode === 'login';
+    return {
+      isLogin, isReg: !isLogin,
+      loginSel: isLogin ? 'true' : 'false', regSel: isLogin ? 'false' : 'true',
+      loginTab: tab(isLogin), regTab: tab(!isLogin),
+      toLogin: () => this.setState({ mode: 'login' }),
+      toReg: () => this.setState({ mode: 'reg' }),
+      roles: Object.keys(R).map((k) => ({
+        kind: k, label: R[k].label, on: k === role ? 'true' : 'false',
+        pick: () => this.setState({ role: k }),
+        style: 'display:flex;flex-direction:column;gap:8px;padding:8px 8px 12px;border-radius:16px;background:#FFFFFF;cursor:pointer;font:inherit;color:#0F1E33;text-align:center;' + (k === role ? 'border:2px solid #1F4FA3;box-shadow:0 0 0 3px #E7EEF9;' : 'border:1px solid #E2E0DA;')
+      })),
+      nameLabel: cur.name,
+      needsLicense: role === 'office' || role === 'contractor',
+      regHref: cur.dash,
+      asideKind: isLogin ? 'owner' : role,
+      asideTitle: isLogin ? 'من مخطط الأرض إلى مفتاح البيت' : cur.title,
+      asideText: isLogin ? 'ادخل لمتابعة طلباتك وعروض المكاتب وتحديثات المراحل.' : cur.text
+    };
+  }
+}
+</script>
+</body>
+</html>

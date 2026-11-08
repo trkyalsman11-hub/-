@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% from '_ui.html' import illus, office_card, stars with context %}
+{% block main %}
+<div class="wrap">
+<section class="hero">
+  <div class="txt">
+    <span class="chip"><span class="dot"></span>منصة تطوير عقاري رقمية</span>
+    <h1>من مخطط الأرض<br>إلى مفتاح البيت</h1>
+    <p class="lead">نربطك بالمكتب الهندسي المناسب لمشروعك، برقم طلب واحد تتابع به كل مرحلة، وتحديثات تصلك على واتساب.</p>
+    <div class="row" style="align-items:center">
+      {% if session.user_id and can('create') %}<a class="btn lg" href="{{ url_for('new_request') }}">ابدأ طلبك</a>
+      {% elif session.user_id %}<a class="btn lg" href="{{ url_for('home') }}">استعرض الطلبات</a>
+      {% else %}<a class="btn lg" href="{{ url_for('register') }}">ابدأ طلبك مجانًا</a>{% endif %}
+      <a class="btn ghost lg" href="{{ url_for('offices') }}">تصفح المكاتب الهندسية</a>
+    </div>
+    <div class="hero-stats">
+      <div><b>{{ stats.offices }}</b><span>مكاتب هندسية مسجّلة</span></div>
+      <div><b>3</b><span>مكاتب مرشحة لكل طلب</span></div>
+      <div><b>48 ساعة</b><span>أقصى مدة للرد على التسعير</span></div>
+    </div>
+  </div>
+  <div class="art">{{ illus('owner') }}</div>
+</section>
+
+<section class="sec" aria-labelledby="roles-h">
+  <div class="head" style="margin-bottom:28px">
+    <div><span class="eyebrow">لكل طرف مساحته</span><h2 id="roles-h" class="big">منصة واحدة، أربعة أدوار</h2></div>
+    <p class="muted" style="max-width:44ch">كل حساب يرى الطلبات والصلاحيات الخاصة به فقط.</p>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+    {% for kind, name, text in [
+      ('owner','المالك','يكتب كراسة متطلباته، يختار من أفضل 3 مكاتب، ويتابع طلبه حتى استلام المفتاح.'),
+      ('office','المكتب الهندسي','يستقبل طلبات جاهزة ببياناتها، يقدّم عرض التصميم، ويحدّث المراحل بضغطة.'),
+      ('contractor','المقاول','يطّلع على المخططات المعتمدة وينافس بعرضه. الحسابات تفتح قريبًا.'),
+      ('developer','المطور العقاري','يدير الطلبات المفتوحة، يُسندها للمكاتب، ويتابع مشاريعه من لوحة واحدة.')] %}
+    <article class="card card-illus">{{ illus(kind) }}<div class="body"><h3>{{ name }}{% if kind=='contractor' %} <span class="pill soon">قريبًا</span>{% endif %}</h3><p>{{ text }}</p></div></article>
+    {% endfor %}
+  </div>
+</section>
+</div>
+
+<section class="dark-band" id="journey" aria-labelledby="journey-h">
+  <div class="wrap">
+    <span class="eyebrow">رحلة المشروع</span>
+    <h2 id="journey-h" class="big" style="font-size:clamp(1.6rem,3.2vw,2.1rem);margin-top:4px">خمس مراحل، ورقم طلب واحد</h2>
+    <ol class="journey">
+      <li><span class="n">01</span><b>كراسة المتطلبات</b><span>المساحة والموقع والميزانية والطراز المعماري</span></li>
+      <li><span class="n">02</span><b>المكتب الهندسي</b><span>ترشيح ذكي لأفضل 3 مكاتب مع نسبة التوافق</span></li>
+      <li><span class="n">03</span><b>المقاولون والإشراف</b><span>طرح المخططات واستقبال عروض المقاولين</span></li>
+      <li><span class="n">04</span><b>الربط التمويلي</b><span>رفع العقود للبنك أو شركة التمويل</span></li>
+      <li><span class="n">05</span><b>التأثيث</b><span>الشراء من متاجر الأثاث الشريكة</span></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap">
+<section class="sec" style="padding-block:72px;display:flex;flex-wrap:wrap;gap:48px;align-items:center" aria-labelledby="match-h">
+  <div class="stack" style="flex:1 1 380px;min-width:0;gap:16px">
+    <span class="eyebrow">الترشيح الذكي</span>
+    <h2 id="match-h" class="big" style="margin:0">نختار لك أنسب 3 مكاتب، ونقول لك ليش</h2>
+    <p style="color:var(--text-2)">نقارن كل مكتب بطلبك على ثلاثة معايير، ونعرض نسبة التوافق وأسبابها قبل ما تختار.</p>
+    <div class="weights">
+      {% for n, w in [('المدينة',40),('التقييم',35),('السعر',25)] %}<div><span>{{ n }}</span><span class="meter" style="margin:0"><i style="width:{{ w }}%"></i></span><b>{{ w }}%</b></div>{% endfor %}
+    </div>
+  </div>
+  {% if example_matches %}
+  <div class="card lift match-demo" style="flex:1 1 460px">
+    <div class="head" style="align-items:center"><span style="font-weight:600">مثال: فيلا سكنية · {{ example.city }} · {{ example.area_m2 }} م²</span><span class="muted" style="font-size:13px">محسوب من بيانات المكاتب الحالية</span></div>
+    {% for m in example_matches %}
+    <div class="m-row{{ ' best' if loop.first }}"><b>{{ m.score }}%</b><div class="t"><div style="font-weight:600">{{ m.office.name }}</div><div class="muted" style="font-size:14px">{{ m.reasons|join(' · ') }}</div></div>{% if loop.first %}<span class="pill solid-orange">الأنسب</span>{% endif %}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+
+<section style="padding-bottom:72px" aria-labelledby="escrow-h">
+  <div class="card escrow">
+    <div class="stack" style="flex:1 1 320px;min-width:0;gap:10px">
+      <span class="pill soon" style="align-self:flex-start">قريبًا</span>
+      <h2 id="escrow-h" style="font-size:28px;line-height:1.4">دفعاتك محمية بحساب ضمان</h2>
+      <p style="color:var(--text-2)">تُودع الدفعة لدى بنك شريك مرخّص، ولا تُصرف للمقاول إلا بعد اعتماد المهندس المشرف للمرحلة.</p>
+    </div>
+    <ol>
+      <li><b>إيداع الدفعة</b><span>في حساب الضمان</span></li>
+      <li><b>تنفيذ المرحلة</b><span>من المقاول</span></li>
+      <li><b>فحص ميداني</b><span>واعتماد المشرف</span></li>
+      <li class="ok"><b>صرف الدفعة</b><span>والانتقال للمرحلة التالية</span></li>
+    </ol>
+  </div>
+</section>
+
+<section style="padding-bottom:72px" aria-labelledby="top-h">
+  <div class="head" style="margin-bottom:24px"><h2 id="top-h" class="big">مكاتب بأعلى تقييم</h2><a class="link-arrow" href="{{ url_for('offices') }}">كل المكاتب ←</a></div>
+  <div class="offices">{% for o in top %}{{ office_card(o) }}{% endfor %}</div>
+</section>
+
+<section style="padding-bottom:80px">
+  <div class="cta-band">
+    <div style="flex:1 1 420px;min-width:0"><h2 style="font-size:30px;line-height:1.4;margin-bottom:8px">مكتب هندسي أو مطور عقاري؟</h2><p>سجّل منشأتك واستقبل طلبات جاهزة ببياناتها الكاملة من ملاك في مدينتك.</p></div>
+    <a class="btn orange lg" href="{{ url_for('register', role='office') }}">سجّل منشأتك</a>
+  </div>
+</section>
+</div>
+{% endblock %}

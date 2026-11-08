@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% from '_ui.html' import illus with context %}
+{% block title %}طلب جديد · بناء وتأثيث{% endblock %}
+{% block page_class %} narrow{% endblock %}
+{% block content %}
+<div><span class="eyebrow">كراسة المتطلبات الرقمية</span><h1>طلب جديد</h1><p class="muted">يصلك رقم الطلب ورسالة تأكيد على واتساب فور الإرسال.</p></div>
+<ol class="steps" aria-label="خطوات الطلب" id="steps">
+  <li class="on" aria-current="step">1. الخدمة والطراز</li><li>2. الموقع والميزانية</li><li>3. المتابعة والمراجعة</li>
+</ol>
+<form method="post" class="card stack" id="reqForm" style="padding:28px;gap:22px">
+  <section class="step stack" data-step="1" style="gap:18px" aria-labelledby="s1h">
+    <h2 id="s1h">ما نوع الخدمة؟</h2>
+    <fieldset><legend class="sr-only">نوع الخدمة</legend><div class="picks">
+      {% for t in types %}<label class="pick"><input type="radio" name="req_type" value="{{ t }}" {{ 'checked' if loop.first }} required>{{ t }}</label>{% endfor %}
+    </div></fieldset>
+    <div><label for="title">عنوان الطلب</label><input id="title" name="title" required placeholder="فيلا سكنية · حي النرجس"></div>
+    <fieldset><legend class="label">الطراز المعماري</legend><div class="chips">
+      {% for s in styles %}<label><input type="radio" name="style" value="{{ s }}" {{ 'checked' if s=='غير محدد' }}>{{ s }}</label>{% endfor %}
+    </div></fieldset>
+  </section>
+
+  <section class="step stack" data-step="2" style="gap:18px" aria-labelledby="s2h">
+    <h2 id="s2h">الموقع والمساحة والميزانية</h2>
+    <div class="form-grid">
+      <div><label for="city">المدينة</label><input id="city" name="city" list="cities" required placeholder="الرياض"><datalist id="cities">{% for c in cities %}<option>{{c}}</option>{% endfor %}</datalist><p class="hint">المكاتب متاحة حاليًا في: {{ cities|join('، ') }}</p></div>
+      <div><label for="area_m2">مساحة الأرض (م²)</label><input id="area_m2" type="number" name="area_m2" min="0" step="any" inputmode="decimal" placeholder="600"></div>
+      <div><label for="budget">الميزانية المتوقعة (ريال)</label><input id="budget" type="number" name="budget" min="0" step="any" inputmode="decimal" placeholder="1500000"></div>
+    </div>
+  </section>
+
+  <section class="step stack" data-step="3" style="gap:18px" aria-labelledby="s3h">
+    <h2 id="s3h">المتابعة والمراجعة</h2>
+    <div class="form-grid">
+      <div><label for="contact_phone">جوال المتابعة (واتساب)</label><input id="contact_phone" name="contact_phone" pattern="05[0-9]{8}" title="رقم سعودي من 10 أرقام يبدأ بـ 05" dir="ltr" inputmode="tel" placeholder="{{ current_user().phone or '05xxxxxxxx' }}"><p class="hint">اتركه فارغًا لاستخدام جوال حسابك.</p></div>
+    </div>
+    <div><label for="description">وصف إضافي</label><textarea id="description" name="description" placeholder="عدد الأدوار، الملاحق، المسبح، متطلبات خاصة…"></textarea></div>
+    <dl class="review" id="review" hidden></dl>
+  </section>
+
+  <div class="step-nav">
+    <button type="button" class="btn ghost" id="prev" hidden>→ السابق</button>
+    <button type="button" class="btn" id="next" hidden>التالي ←</button>
+    <button class="btn orange lg" id="send">إرسال الطلب</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}<script>
+(function(){
+  var f=document.getElementById('reqForm'),steps=[].slice.call(f.querySelectorAll('.step')),li=[].slice.call(document.querySelectorAll('#steps li')),
+      prev=document.getElementById('prev'),next=document.getElementById('next'),send=document.getElementById('send'),rev=document.getElementById('review'),cur=0;
+  function val(n){var e=f.elements[n];return e?(e.value||'').trim():''}
+  function fmt(n){return n?Number(n).toLocaleString('en-US'):'—'}
+  function review(){
+    var items=[['نوع الخدمة',val('req_type')],['العنوان',val('title')],['الطراز',val('style')],['المدينة',val('city')],['المساحة',val('area_m2')?fmt(val('area_m2'))+' م²':'—'],['الميزانية',val('budget')?fmt(val('budget'))+' ريال':'—']];
+    rev.innerHTML='';items.forEach(function(i){var d=document.createElement('div'),t=document.createElement('dt'),v=document.createElement('dd');t.textContent=i[0];v.textContent=i[1]||'—';d.appendChild(t);d.appendChild(v);rev.appendChild(d)});rev.hidden=false;
+  }
+  function show(i,focus){cur=i;steps.forEach(function(s,k){s.hidden=k!==i});
+    li.forEach(function(l,k){l.className=k<i?'done':k===i?'on':'';if(k===i)l.setAttribute('aria-current','step');else l.removeAttribute('aria-current')});
+    prev.hidden=i===0;next.hidden=i===steps.length-1;send.hidden=i!==steps.length-1;if(i===steps.length-1)review();
+    if(focus){var h=steps[i].querySelector('h2');h.setAttribute('tabindex','-1');h.focus()}}
+  function valid(i){var bad=[].slice.call(steps[i].querySelectorAll('input,select,textarea')).filter(function(e){return !e.checkValidity()});if(bad.length){bad[0].reportValidity();return false}return true}
+  next.addEventListener('click',function(){if(valid(cur))show(cur+1,true)});
+  prev.addEventListener('click',function(){show(cur-1,true)});
+  f.addEventListener('submit',function(e){for(var i=0;i<steps.length;i++){if(!valid(i)){e.preventDefault();e.stopImmediatePropagation();show(i,true);valid(i);return}}},true);
+  f.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT'&&cur<steps.length-1){e.preventDefault();next.click()}});
+  show(0);
+})();
+</script>{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}المستخدمون · بناء وتأثيث{% endblock %}
+{% block content %}
+<div class="head"><h1>المستخدمون والصلاحيات</h1><span class="muted">{{ rows|length }} حساب</span></div>
+<div class="tbl"><table><thead><tr><th>#</th><th>الاسم</th><th>المستخدم</th><th>الدور</th><th>المكتب</th><th>الجوال</th><th>التسجيل</th></tr></thead><tbody>
+{% for u in rows %}<tr><td class="mono">{{ u.id }}</td><td>{{ u.full_name }}</td><td class="mono" style="text-align:right">{{ u.username }}</td><td><span class="pill">{{ ROLES[u.role] }}</span></td><td>{{ u.office_name or '—' }}</td><td class="mono" style="text-align:right">{{ u.phone or '—' }}</td><td class="muted mono">{{ u.created_at }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

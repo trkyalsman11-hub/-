@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% from '_ui.html' import illus, progress, status as pill, stars, timeline with context %}
+{% block title %}{{ req.req_no }} · بناء وتأثيث{% endblock %}
+{% block content %}
+<a class="link-arrow" href="{{ url_for('home') }}" style="align-self:flex-start">→ {{ 'لوحتي' if session.role in ('owner','client') else 'الطلبات' }}</a>
+
+<section class="card stack" style="gap:18px">
+  <div class="head" style="align-items:center">
+    <div><span class="req-no">{{ req.req_no }}</span><h1 style="margin-top:8px">{{ req.title }}</h1></div>
+    {{ pill(req.status, lg=true) }}
+  </div>
+  {% if step %}<div>{{ progress(step) }}</div>{% endif %}
+  <dl class="facts">
+    <div><dt>الخدمة</dt><dd>{{ req.req_type }}</dd></div>
+    <div><dt>المدينة</dt><dd>{{ req.city }}</dd></div>
+    <div><dt>المساحة</dt><dd>{{ '{:,.0f} م²'.format(req.area_m2) if req.area_m2 else '—' }}</dd></div>
+    <div><dt>الميزانية</dt><dd>{{ '{:,.0f} ريال'.format(req.budget) if req.budget else '—' }}</dd></div>
+    <div><dt>الطراز</dt><dd>{{ req.style or '—' }}</dd></div>
+    <div><dt>جوال المتابعة</dt><dd class="mono" style="text-align:right">{{ req.contact_phone or '—' }}</dd></div>
+  </dl>
+  {% if req.description %}<p style="color:var(--text-2)">{{ req.description }}</p>{% endif %}
+</section>
+
+{% if matches and (can('choose_office') or can('assign')) %}
+<section class="stack" aria-labelledby="match-h">
+  <div class="head"><div><span class="eyebrow">الترشيح الذكي</span><h2 id="match-h">أفضل 3 مكاتب لطلبك</h2></div><span class="muted">المدينة 40% · التقييم 35% · السعر 25%</span></div>
+  <div class="match">{% for m in matches %}
+    <article class="card{{ ' accent lift best' if loop.first }}">
+      {% if loop.first %}<span class="pill solid-orange" style="align-self:flex-start">الأنسب لطلبك</span>{% endif %}
+      <div class="score">{{ m.score }}%</div><div class="meter" style="margin:0 0 6px"><i style="width:{{ m.score }}%"></i></div>
+      <h3>{{ m.office.name }}</h3>
+      <div class="muted">{{ m.office.city }} · {{ m.office.price_per_m2|int }} ريال/م² · {{ stars(m.office.rating) }}</div>
+      {% if m.estimate %}<div class="muted">تكلفة تصميم تقديرية: <b style="color:var(--text)">{{ '{:,.0f}'.format(m.estimate) }} ريال</b></div>{% endif %}
+      <ul>{% for r in m.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+      <form method="post" action="{{ url_for('update_request', req_no=req.req_no) }}">
+        <input type="hidden" name="office_id" value="{{ m.office.id }}"><input type="hidden" name="status" value="{{ req.status }}">
+        <button class="btn block {{ 'orange' if loop.first else 'ghost' }}">اختيار هذا المكتب</button></form>
+    </article>{% endfor %}</div>
+</section>
+{% endif %}
+
+<div class="split">
+  <div class="main-col">
+    <section class="card stack" aria-labelledby="upd-h" style="gap:16px">
+      <h2 id="upd-h">{{ 'تحديث الطلب' if can('update_status') or can('assign') else 'إضافة ملاحظة' }}</h2>
+      <form method="post" action="{{ url_for('update_request', req_no=req.req_no) }}" class="stack">
+        <div class="row">
+          {% if can('update_status') %}<div class="f"><label for="u_status">الحالة</label><select id="u_status" name="status">{% for s in STATUSES %}<option {{ 'selected' if s==req.status }}>{{s}}</option>{% endfor %}</select></div>
+          {% else %}<input type="hidden" name="status" value="{{ req.status }}">{% endif %}
+          {% if can('assign') %}
+          <div class="f"><label for="u_office">إسناد لمكتب</label><select id="u_office" name="office_id"><option value="">—</option>{% for o in offices %}<option value="{{o.id}}" {{ 'selected' if o.id==req.office_id }}>{{o.name}} ({{o.city}})</option>{% endfor %}</select></div>
+          <div class="f"><label for="u_dev">المطور</label><select id="u_dev" name="developer_id"><option value="">—</option>{% for d in developers %}<option value="{{d.id}}" {{ 'selected' if d.id==req.developer_id }}>{{d.full_name}}</option>{% endfor %}</select></div>
+          {% endif %}
+        </div>
+        <div><label for="u_note">ملاحظة تصل للمستفيد عبر واتساب</label><textarea id="u_note" name="note" placeholder="مثال: تم إرسال عرض السعر، المدة 45 يوم عمل"></textarea></div>
+        <div><button class="btn">حفظ وإشعار المستفيد</button></div>
+      </form>
+    </section>
+
+    <section class="card stack" aria-labelledby="log-h" style="gap:16px">
+      <h2 id="log-h">سجل التحديثات</h2>
+      {{ timeline(updates) }}
+    </section>
+  </div>
+
+  <aside class="side-col">
+    <div class="card card-illus">
+      {{ illus(ILLUS_BY_TYPE.get(req.req_type, 'office')) }}
+      <div class="body">
+        <span class="muted" style="font-size:13px">المكتب المسند</span>
+        {% if office %}<b style="font-size:17px">{{ office.name }}</b><span class="muted">{{ office.city }} · {{ stars(office.rating) }} · {{ office.price_per_m2|int }} ريال/م²</span>{% if office.phone %}<a class="phone" href="tel:{{ office.phone }}" style="align-self:flex-start">{{ office.phone }}</a>{% endif %}
+        {% else %}<b style="font-size:17px">لم يُسند بعد</b><span class="muted">{{ 'اختر من الترشيحات أعلاه.' if matches and can('choose_office') else 'بانتظار الإسناد.' }}</span>{% endif %}
+      </div>
+    </div>
+    {% if notes %}
+    <div class="card stack" style="gap:12px">
+      <h2 style="font-size:18px">آخر رسالة واتساب</h2>
+      <div class="wa">{{ notes[0].message }}</div>
+      <span class="muted" style="font-size:13px">{{ 'واتساب' if notes[0].channel=='whatsapp' else 'رسالة نصية' }} · <span class="mono">{{ notes[0].created_at }}</span> · {% if notes[0].success %}أُرسلت{% else %}<span style="color:var(--bad)" title="{{ notes[0].detail }}">لم تُرسل</span>{% endif %}</span>
+    </div>
+    <div class="card stack" style="gap:10px">
+      <h2 style="font-size:18px">سجل الإشعارات</h2>
+      {% for n in notes %}<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--stone);font-size:14px"><span class="mono">{{ n.created_at }}</span><span>{{ 'واتساب' if n.channel=='whatsapp' else 'SMS' }}</span>{% if n.success %}<span class="pill s-done">أُرسل</span>{% else %}<span class="pill s-bad" title="{{ n.detail }}">لم يُرسل</span>{% endif %}</div>{% endfor %}
+    </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

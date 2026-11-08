@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% from '_ui.html' import progress, status as pill, timeline with context %}
+{% block title %}تتبع طلب · بناء وتأثيث{% endblock %}
+{% block page_class %} narrow{% endblock %}
+{% block content %}
+<div class="stack" style="text-align:center;align-items:center;gap:8px;padding-top:20px">
+  <span class="chip" style="align-self:center">بدون تسجيل دخول</span>
+  <h1 style="font-size:clamp(2rem,4.5vw,2.5rem)">تتبع طلبك</h1>
+  <p class="muted">رقم الطلب موجود في رسالة التأكيد اللي وصلتك على واتساب.</p>
+</div>
+<form class="card row" style="padding:22px;gap:14px">
+  <div style="flex:2 1 220px;min-width:0"><label for="no">رقم الطلب</label><input id="no" name="no" class="mono-in" value="{{ no }}" placeholder="BT-2026-00001" required dir="ltr" autocomplete="off" spellcheck="false"></div>
+  <div style="flex:1 1 150px;min-width:0"><label for="phone4">آخر 4 أرقام من الجوال</label><input id="phone4" name="phone4" class="mono-in" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required dir="ltr" autocomplete="off"></div>
+  <button class="btn lg">بحث</button>
+</form>
+{% if req %}
+{% set step = status_step(req.status) %}
+<article class="card stack" style="padding:28px;gap:20px" aria-live="polite">
+  <div class="head" style="align-items:center">
+    <div><div class="req-no plain">{{ req.req_no }}</div><h2 style="font-size:24px;margin-top:2px">{{ req.title }}</h2></div>
+    {{ pill(req.status, lg=true) }}
+  </div>
+  {% if step %}<div>{{ progress(step) }}</div>{% endif %}
+  {{ timeline(updates, show_who=false) }}
+  {% set ph = req.contact_phone or '' %}
+  <div class="notice"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.5 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z"/></svg>
+    <span>كل تحديث جديد يصلك على واتساب برقم <span class="mono">{{ ph[:2] }}•••••{{ ph[-4:] }}</span></span></div>
+</article>
+{% endif %}
+{% endblock %}
