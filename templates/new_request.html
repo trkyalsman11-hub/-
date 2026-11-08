@@ -11,7 +11,7 @@
   <section class="step stack" data-step="1" style="gap:18px" aria-labelledby="s1h">
     <h2 id="s1h">ما نوع الخدمة؟</h2>
     <fieldset><legend class="sr-only">نوع الخدمة</legend><div class="picks">
-      {% for t in types %}<label class="pick"><input type="radio" name="req_type" value="{{ t }}" {{ 'checked' if loop.first }} required>{{ t }}</label>{% endfor %}
+      {% for t in types %}<label class="pick"><input type="radio" name="req_type" value="{{ t }}" {{ 'checked' if t==pre.type }} required>{{ t }}</label>{% endfor %}
     </div></fieldset>
     <div><label for="title">عنوان الطلب</label><input id="title" name="title" required placeholder="فيلا سكنية · حي النرجس"></div>
     <fieldset><legend class="label">الطراز المعماري</legend><div class="chips">
@@ -22,7 +22,7 @@
   <section class="step stack" data-step="2" style="gap:18px" aria-labelledby="s2h">
     <h2 id="s2h">الموقع والمساحة والميزانية</h2>
     <div class="form-grid">
-      <div><label for="city">المدينة</label><input id="city" name="city" list="cities" required placeholder="الرياض"><datalist id="cities">{% for c in cities %}<option>{{c}}</option>{% endfor %}</datalist><p class="hint">المكاتب متاحة حاليًا في: {{ cities|join('، ') }}</p></div>
+      <div><label for="city">المدينة</label><input id="city" name="city" list="cities" required placeholder="الرياض" value="{{ pre.city }}"><datalist id="cities">{% for c in cities %}<option>{{c}}</option>{% endfor %}</datalist><p class="hint">المكاتب متاحة حاليًا في: {{ cities|join('، ') }}</p></div>
       <div><label for="area_m2">مساحة الأرض (م²)</label><input id="area_m2" type="number" name="area_m2" min="0" step="any" inputmode="decimal" placeholder="600"></div>
       <div><label for="budget">الميزانية المتوقعة (ريال)</label><input id="budget" type="number" name="budget" min="0" step="any" inputmode="decimal" placeholder="1500000"></div>
     </div>

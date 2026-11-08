@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
-{% from '_ui.html' import illus, office_card, stars with context %}
+{% from '_ui.html' import illus, office_card, stars, icon with context %}
+{% block title %}بناء وتأثيث · منصة تربط المالك بالمكتب الهندسي والمقاول{% endblock %}
+{% block head_extra %}<script type="application/ld+json">{{ {
+  "@context": "https://schema.org", "@type": "Organization",
+  "name": "بناء وتأثيث", "alternateName": "منصة بناء وتأثيث",
+  "url": site_url() ~ "/", "slogan": "من المخطط إلى المفتاح",
+  "description": "منصة تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري، من كراسة المتطلبات حتى التأثيث.",
+  "areaServed": ["الرياض", "شقراء"],
+  "address": {"@type": "PostalAddress", "addressLocality": "الرياض", "addressCountry": "SA"}
+}|tojson }}</script>{% endblock %}
 {% block main %}
 <div class="wrap">
 <section class="hero">
@@ -19,7 +28,28 @@
       <div><b>48 ساعة</b><span>أقصى مدة للرد على التسعير</span></div>
     </div>
   </div>
-  <div class="art">{{ illus('owner') }}</div>
+  <div class="art tilt" data-tilt>{{ illus('owner') }}</div>
+</section>
+
+<form class="card lift quick" action="{{ url_for('new_request') }}" method="get" aria-labelledby="quick-h">
+  <h2 id="quick-h" class="quick-t">ابدأ طلبك في أقل من دقيقتين</h2>
+  <div class="quick-f"><label for="q_type">نوع الخدمة</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
+  <div class="quick-f"><label for="q_city">المدينة</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
+  <button class="btn orange lg">ابدأ الطلب {{ icon('arrow', 20) }}</button>
+</form>
+
+<section class="sec" aria-labelledby="svc-h">
+  <div class="head" style="margin-bottom:24px"><div><span class="eyebrow">خدماتنا</span><h2 id="svc-h" class="big">كل ما يحتاجه مشروعك، من مكان واحد</h2></div></div>
+  <div class="services">
+    {% for t, ic, d in [
+      ('تصميم هندسي','design','مخططات معمارية وإنشائية من مكاتب معتمدة.'),
+      ('إشراف هندسي','supervise','مهندس يتابع التنفيذ ويعتمد كل مرحلة.'),
+      ('مقاولات','build','طرح المخططات المعتمدة على المقاولين.'),
+      ('تأثيث وديكور','furnish','تأثيث البيت بعد الاستلام.'),
+      ('تطوير عقاري','develop','إدارة مشاريع المطورين من لوحة واحدة.')] %}
+    <a class="card svc" href="{{ url_for('new_request', type=t) }}"><span class="svc-i">{{ icon(ic, 26) }}</span><span class="svc-b"><b>{{ t }}</b><span>{{ d }}</span></span><span class="svc-go" aria-hidden="true">{{ icon('arrow', 18) }}</span></a>
+    {% endfor %}
+  </div>
 </section>
 
 <section class="sec" aria-labelledby="roles-h">
@@ -73,6 +103,16 @@
   {% endif %}
 </section>
 
+<section style="padding-bottom:72px" aria-labelledby="why-h">
+  <div class="head" style="margin-bottom:24px"><div><span class="eyebrow">لماذا بناء وتأثيث</span><h2 id="why-h" class="big">وضوح في كل خطوة</h2></div></div>
+  <div class="why">
+    <div class="why-i"><span class="svc-i">{{ icon('match') }}</span><b>ترشيح شفاف</b><p>نعرض نسبة توافق كل مكتب وأسبابها: المدينة 40% والتقييم 35% والسعر 25%.</p></div>
+    <div class="why-i"><span class="svc-i">{{ icon('clock') }}</span><b>رد خلال 48 ساعة</b><p>أقصى مدة يقدّم فيها المكتب عرض التسعير بعد إسناد الطلب.</p></div>
+    <div class="why-i"><span class="svc-i">{{ icon('chat') }}</span><b>كل تحديث على واتساب</b><p>رقم طلب واحد، وكل تغيير في الحالة يصلك برسالة وتتابعه من صفحة التتبع.</p></div>
+    <div class="why-i"><span class="svc-i">{{ icon('star') }}</span><b>تقييمات حقيقية فقط</b><p>يقيّم المكتب ملاك أكملوا طلبًا فعليًا برقم طلب، لا تقييمات شكلية.</p></div>
+  </div>
+</section>
+
 <section style="padding-bottom:72px" aria-labelledby="escrow-h">
   <div class="card escrow">
     <div class="stack" style="flex:1 1 320px;min-width:0;gap:10px">
@@ -94,6 +134,19 @@
   <div class="offices">{% for o in top %}{{ office_card(o) }}{% endfor %}</div>
 </section>
 
+<section style="padding-bottom:72px" aria-labelledby="faq-h">
+  <div class="faq-wrap">
+    <div><span class="eyebrow">أسئلة شائعة</span><h2 id="faq-h" class="big">قبل ما تبدأ</h2></div>
+    <div class="faq">
+      <details><summary>كيف تختارون المكاتب المرشحة لطلبي؟</summary><p>نقارن كل مكتب بطلبك على ثلاثة معايير: المدينة 40% والتقييم 35% والسعر 25%، ونعرض لك أفضل 3 مكاتب مع نسبة التوافق وأسبابها، والقرار لك.</p></details>
+      <details><summary>كيف أتابع طلبي؟</summary><p>يصلك رقم طلب بالشكل BT-2026-00001 على واتساب، وكل تحديث يصلك برسالة. وتقدر تتابع من صفحة «تتبع طلب» برقم الطلب وآخر 4 أرقام من جوالك بدون تسجيل دخول.</p></details>
+      <details><summary>في أي المدن تعمل المنصة؟</summary><p>المكاتب المسجّلة حاليًا في {{ cities|join(' و') }}، ونضيف مدنًا جديدة مع انضمام المكاتب.</p></details>
+      <details><summary>متى يصلني عرض السعر؟</summary><p>يقدّم المكتب عرضه خلال 48 ساعة كحد أقصى من إسناد الطلب إليه.</p></details>
+      <details><summary>أنا مكتب هندسي، كيف أنضم؟</summary><p>أنشئ حسابًا بنوع «مكتب هندسي» واختر مكتبك من القائمة، وستصلك الطلبات المُسندة إليك ببياناتها الكاملة.</p></details>
+    </div>
+  </div>
+</section>
+
 <section style="padding-bottom:80px">
   <div class="cta-band">
     <div style="flex:1 1 420px;min-width:0"><h2 style="font-size:30px;line-height:1.4;margin-bottom:8px">مكتب هندسي أو مطور عقاري؟</h2><p>سجّل منشأتك واستقبل طلبات جاهزة ببياناتها الكاملة من ملاك في مدينتك.</p></div>
@@ -102,3 +155,10 @@
 </section>
 </div>
 {% endblock %}
+{% block scripts %}<script>
+(function(){var el=document.querySelector('[data-tilt]');if(!el||matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover: hover)').matches)return;
+var svg=el.querySelector('.illus'),raf=0;
+el.addEventListener('pointermove',function(e){var r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){svg.style.transform='rotateY('+(x*10).toFixed(2)+'deg) rotateX('+(-y*8).toFixed(2)+'deg)'})});
+el.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);svg.style.transform=''})})();
+</script>{% endblock %}

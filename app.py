@@ -224,7 +224,7 @@ def login_required(f):
     @wraps(f)
     def wrapper(*a, **kw):
         if "user_id" not in session:
-            return redirect(url_for("login", next=request.path))
+            return redirect(url_for("login", next=request.full_path.rstrip("?")))
         return f(*a, **kw)
     return wrapper
 
@@ -300,6 +300,38 @@ def logout():
 
 
 # ───────────────────────── الصفحات ─────────────────────────
+# ───────────────────────── محركات البحث ─────────────────────────
+PUBLIC_PAGES = ["index", "offices", "track", "register"]   # الصفحات التي تظهر في جوجل
+PRIVATE_PATHS = ["/home", "/requests/", "/dashboard", "/users", "/logout"]
+
+
+def site_url():
+    """عنوان الموقع الأساسي: SITE_URL إن وُجد، وإلا من الطلب الحالي (ProxyFix يضبط https)."""
+    return (os.environ.get("SITE_URL") or request.url_root).rstrip("/")
+
+
+app.jinja_env.globals.update(site_url=site_url,
+                             google_verification=os.environ.get("GOOGLE_SITE_VERIFICATION", ""))
+
+
+@app.route("/robots.txt")
+def robots():
+    lines = ["User-agent: *", "Allow: /"] + [f"Disallow: {p}" for p in PRIVATE_PATHS] + \
+            ["", f"Sitemap: {site_url()}/sitemap.xml", ""]
+    return app.response_class("\n".join(lines), mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    today = datetime.now(TZ).strftime("%Y-%m-%d")
+    urls = "".join(
+        f"<url><loc>{site_url()}{url_for(ep)}</loc><lastmod>{today}</lastmod>"
+        f"<priority>{'1.0' if ep == 'index' else '0.7'}</priority></url>" for ep in PUBLIC_PAGES)
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>'
+           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
+    return app.response_class(xml, mimetype="application/xml")
+
+
 @app.route("/healthz")
 def healthz():
     db().execute("SELECT 1").fetchone()
@@ -317,7 +349,9 @@ def index():
     top = db().execute("SELECT * FROM offices ORDER BY rating DESC, price_per_m2 ASC LIMIT 3").fetchall()
     # مثال الترشيح يُحسب من بيانات المكاتب الفعلية (لا نسب مخترعة)
     example = {"city": "شقراء", "area_m2": 600, "budget": 0}
-    return render_template("index.html", stats=stats, top=top, example=example, example_matches=match_offices(example))
+    cities = [r[0] for r in db().execute("SELECT DISTINCT city FROM offices ORDER BY city").fetchall()]
+    return render_template("index.html", stats=stats, top=top, example=example, example_matches=match_offices(example),
+                           types=REQUEST_TYPES, cities=cities)
 
 
 def visible_requests_query():
@@ -375,7 +409,9 @@ def new_request():
         flash(f"تم إنشاء الطلب رقم {req_no}", "ok")
         return redirect(url_for("request_detail", req_no=req_no))
     cities = [r[0] for r in db().execute("SELECT DISTINCT city FROM offices").fetchall()]
-    return render_template("new_request.html", types=REQUEST_TYPES, styles=STYLES, cities=cities)
+    pre = {"type": request.args.get("type") if request.args.get("type") in REQUEST_TYPES else REQUEST_TYPES[0],
+           "city": request.args.get("city", "").strip()[:40]}
+    return render_template("new_request.html", types=REQUEST_TYPES, styles=STYLES, cities=cities, pre=pre)
 
 
 def load_visible_request(req_no):
@@ -498,7 +534,49 @@ def dashboard():
 def users():
     rows = db().execute("""SELECT u.*, o.name AS office_name FROM users u
                            LEFT JOIN offices o ON o.id=u.office_id ORDER BY u.id""").fetchall()
-    return render_template("users.html", rows=rows)
+    offices_list = db().execute("SELECT id, name, city FROM offices ORDER BY name").fetchall()
+    return render_template("users.html", rows=rows, offices=offices_list)
+
+
+@app.route("/users/<int:uid>/update", methods=["POST"])
+@require("manage_users")
+def update_user(uid):
+    """تعديل حساب من مدير النظام: الاسم، اسم المستخدم، الجوال، الدور، المكتب، وكلمة مرور جديدة اختيارية."""
+    u = db().execute("SELECT * FROM users WHERE id=?", (uid,)).fetchone()
+    if not u:
+        abort(404)
+    f = request.form
+    full_name, username = f.get("full_name", "").strip(), f.get("username", "").strip()
+    phone, role, password = f.get("phone", "").strip(), f.get("role", u["role"]), f.get("password", "")
+    office_id = int(f["office_id"]) if role == "office" and f.get("office_id") else None
+    error = None
+    if not full_name or not username:
+        error = "الاسم واسم المستخدم مطلوبان"
+    elif role not in ROLES:
+        error = "دور غير معروف"
+    elif uid == session["user_id"] and role != u["role"]:
+        error = "لا يمكنك تغيير دور حسابك أنت، حتى لا تفقد صلاحية الإدارة"
+    elif role == "office" and not office_id:
+        error = "حساب المكتب الهندسي يجب أن يرتبط بمكتب من القائمة"
+    elif phone and not (len(phone) == 10 and phone.startswith("05") and phone.isdigit()):
+        error = "رقم الجوال يجب أن يكون 10 أرقام ويبدأ بـ 05"
+    elif password and len(password) < 6:
+        error = "كلمة المرور 6 أحرف على الأقل"
+    if error:
+        flash(error, "error")
+        return redirect(url_for("users"))
+    try:
+        db().execute("UPDATE users SET full_name=?, username=?, phone=?, role=?, office_id=? WHERE id=?",
+                     (full_name, username, phone, role, office_id, uid))
+        if password:
+            db().execute("UPDATE users SET password=? WHERE id=?", (generate_password_hash(password), uid))
+        db().commit()
+    except database.IntegrityError:
+        db().rollback()
+        flash("اسم المستخدم مستخدم لحساب آخر", "error")
+        return redirect(url_for("users"))
+    flash(f"تم تحديث حساب {full_name}", "ok")
+    return redirect(url_for("users"))
 
 
 @app.errorhandler(403)

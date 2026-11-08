@@ -1,8 +1,31 @@
 {% extends 'base.html' %}
 {% block title %}المستخدمون · بناء وتأثيث{% endblock %}
 {% block content %}
-<div class="head"><h1>المستخدمون والصلاحيات</h1><span class="muted">{{ rows|length }} حساب</span></div>
-<div class="tbl"><table><thead><tr><th>#</th><th>الاسم</th><th>المستخدم</th><th>الدور</th><th>المكتب</th><th>الجوال</th><th>التسجيل</th></tr></thead><tbody>
-{% for u in rows %}<tr><td class="mono">{{ u.id }}</td><td>{{ u.full_name }}</td><td class="mono" style="text-align:right">{{ u.username }}</td><td><span class="pill">{{ ROLES[u.role] }}</span></td><td>{{ u.office_name or '—' }}</td><td class="mono" style="text-align:right">{{ u.phone or '—' }}</td><td class="muted mono">{{ u.created_at }}</td></tr>{% endfor %}
+<div class="head"><div><h1>المستخدمون والصلاحيات</h1><p class="muted">مدير النظام يستطيع تعديل أي حساب: الاسم واسم المستخدم والجوال والدور وكلمة المرور.</p></div><span class="muted">{{ rows|length }} حساب</span></div>
+<div class="tbl"><table><thead><tr><th>#</th><th>الاسم</th><th>المستخدم</th><th>الدور</th><th>المكتب</th><th>الجوال</th><th>التسجيل</th><th><span class="sr-only">إجراءات</span></th></tr></thead><tbody>
+{% for u in rows %}<tr><td class="mono">{{ u.id }}</td><td>{{ u.full_name }}{% if u.id == session.user_id %} <span class="pill s-wait">أنت</span>{% endif %}</td><td class="mono" style="text-align:right">{{ u.username }}</td><td><span class="pill">{{ ROLES[u.role] }}</span></td><td>{{ u.office_name or '—' }}</td><td class="mono" style="text-align:right">{{ u.phone or '—' }}</td><td class="muted mono">{{ u.created_at }}</td>
+<td><a class="btn ghost sm" href="#edit-{{ u.id }}">تعديل</a></td></tr>{% endfor %}
 </tbody></table></div>
+
+<section class="stack" aria-labelledby="edit-h" style="gap:16px">
+<h2 id="edit-h">تعديل الحسابات</h2>
+{% for u in rows %}
+<details class="card user-edit" id="edit-{{ u.id }}"{% if u.id == session.user_id %} open{% endif %}>
+  <summary><b>{{ u.full_name }}</b> <span class="muted">· <span class="mono">{{ u.username }}</span> · {{ ROLES[u.role] }}</span></summary>
+  <form method="post" action="{{ url_for('update_user', uid=u.id) }}" class="stack" style="margin-top:16px">
+    <div class="form-grid">
+      <div><label for="n{{u.id}}">الاسم الكامل</label><input id="n{{u.id}}" name="full_name" value="{{ u.full_name }}" required></div>
+      <div><label for="u{{u.id}}">اسم المستخدم (للدخول)</label><input id="u{{u.id}}" name="username" value="{{ u.username }}" required dir="ltr" autocomplete="off"></div>
+      <div><label for="p{{u.id}}">الجوال</label><input id="p{{u.id}}" name="phone" value="{{ u.phone or '' }}" pattern="05[0-9]{8}" title="رقم سعودي من 10 أرقام يبدأ بـ 05" dir="ltr" inputmode="tel"></div>
+      <div><label for="r{{u.id}}">الدور</label>
+        {% if u.id == session.user_id %}<input id="r{{u.id}}" value="{{ ROLES[u.role] }}" disabled><input type="hidden" name="role" value="{{ u.role }}"><p class="hint">لا يمكن تغيير دور حسابك أنت.</p>
+        {% else %}<select id="r{{u.id}}" name="role">{% for k, v in ROLES.items() %}<option value="{{ k }}" {{ 'selected' if k==u.role }}>{{ v }}</option>{% endfor %}</select>{% endif %}</div>
+      <div><label for="o{{u.id}}">المكتب (لحساب المكتب الهندسي)</label><select id="o{{u.id}}" name="office_id"><option value="">—</option>{% for o in offices %}<option value="{{ o.id }}" {{ 'selected' if o.id==u.office_id }}>{{ o.name }} ({{ o.city }})</option>{% endfor %}</select></div>
+      <div><label for="w{{u.id}}">كلمة مرور جديدة</label><input id="w{{u.id}}" name="password" type="password" minlength="6" dir="ltr" autocomplete="new-password"><p class="hint">اتركها فارغة لإبقاء الحالية.</p></div>
+    </div>
+    <div><button class="btn">حفظ التعديل</button></div>
+  </form>
+</details>
+{% endfor %}
+</section>
 {% endblock %}
