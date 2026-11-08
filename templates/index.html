@@ -47,29 +47,33 @@
   </div>
 </section>
 
-{# ───── مراحل المشروع: تسلسل حقيقي فالترقيم مبرَّر ───── #}
-<section class="wrap h-sec" id="journey" aria-labelledby="journey-h">
-  <h2 id="journey-h" class="h-title">كيف يسير مشروعك</h2>
-  <ol class="h-steps">
-    <li>
-      <img src="{{ url_for('static', filename='img/step-office.webp') }}" width="1100" height="619" loading="lazy" decoding="async" style="object-position:72% 50%" alt="مالكة ومهندس يراجعان مخطط الفيلا في مكتب هندسي يطل على الرياض">
-      <span class="h-step-n" aria-hidden="true">1</span>
-      <h3>المخطط</h3>
-      <p>تكتب كراسة متطلباتك: المدينة والمساحة والميزانية والطراز. نرشّح لك ثلاثة مكاتب، ونوضح سبب كل ترشيح.</p>
+{# ───── قصة المشروع: أربع مراحل حقيقية متسلسلة، بصور كبيرة متناوبة ───── #}
+<section class="story" id="journey" aria-labelledby="journey-h">
+  <div class="wrap">
+    <h2 id="journey-h" class="h-title">من المخطط إلى المفتاح</h2>
+    <p class="story-intro">هذه رحلة مشروعك على المنصة. كل مرحلة مسجّلة برقم طلبك، وكل تحديث يصلك برسالة.</p>
+  </div>
+  <ol class="story-list">
+    {% for img, pos, alt, title, text in [
+      ('story-office','72% 50%','مالكة ومهندس يراجعان مخطط الفيلا في مكتب هندسي يطل على الرياض','المخطط',
+       'تكتب كراسة متطلباتك: المدينة والمساحة والميزانية والطراز. نرشّح لك ثلاثة مكاتب هندسية، ونوضح سبب كل ترشيح، وأنت تختار.'),
+      ('story-site','60% 50%','المالكان مع مهندس الموقع يراجعون المخطط أمام البيت تحت الإنشاء','البناء',
+       'يقدّم المكتب عرضه خلال 48 ساعة وتعتمده من لوحتك. بعدها يُطرح المخطط على المقاولين، وتتابع كل مرحلة من مكانك.'),
+      ('story-key','68% 45%','مالك يحمل مفتاح بيته الجديد أمام فيلته','التسليم',
+       'تستلم بيتك ومفتاحه بيدك. يبقى سجل مشروعك كاملًا محفوظًا: المخططات والعروض وكل تحديث.'),
+      ('story-majlis','78% 50%','زوجان يختاران أثاث مجلس بيتهما الجديد','التأثيث',
+       'تنتقل لتأثيث بيتك من متاجر الأثاث الشريكة، برقم الطلب نفسه.')] %}
+    <li class="story-item">
+      <figure class="story-img"><img src="{{ url_for('static', filename='img/' ~ img ~ '.webp') }}" width="1400" height="788" loading="lazy" decoding="async" style="object-position:{{ pos }}" alt="{{ alt }}"></figure>
+      <div class="story-txt">
+        <span class="story-n" aria-hidden="true">{{ loop.index }}</span>
+        <h3>{{ title }}</h3>
+        <p>{{ text }}</p>
+      </div>
     </li>
-    <li>
-      <img src="{{ url_for('static', filename='img/step-site.webp') }}" width="1100" height="619" loading="lazy" decoding="async" style="object-position:62% 50%" alt="المالك والمالكة مع مهندس الموقع يراجعون المخطط أمام البيت تحت الإنشاء">
-      <span class="h-step-n" aria-hidden="true">2</span>
-      <h3>البناء</h3>
-      <p>يقدّم المكتب عرضه خلال 48 ساعة وتعتمده من لوحتك. كل تحديث على طلبك يصلك برسالة.</p>
-    </li>
-    <li>
-      <img src="{{ url_for('static', filename='img/step-majlis.webp') }}" width="1100" height="619" loading="lazy" decoding="async" style="object-position:84% 50%" alt="زوجان يختاران أثاث مجلس بيتهما الجديد">
-      <span class="h-step-n" aria-hidden="true">3</span>
-      <h3>التأثيث</h3>
-      <p>تستلم بيتك وتنتقل للتأثيث، ويبقى سجل مشروعك كاملًا محفوظًا برقم طلبك.</p>
-    </li>
+    {% endfor %}
   </ol>
+  <div class="wrap story-cta"><a class="btn orange lg" href="{{ url_for('new_request') }}">ابدأ المرحلة الأولى</a></div>
 </section>
 
 {# ───── الترشيح: الشرح بجانب مثال محسوب فعليًا ───── #}

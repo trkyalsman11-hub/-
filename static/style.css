@@ -511,3 +511,30 @@ h2.big{font-size:clamp(1.6rem,3.2vw,2.1rem);margin-top:4px}
 .auth-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
 .auth-cap{margin:32px;padding:26px 30px;border-radius:22px;background:rgba(15,30,51,.9);display:flex;flex-direction:column;gap:10px;max-width:480px}
 .auth-cap h2{font-size:26px;line-height:1.4}.auth-cap p{color:#C6CEDC;font-size:16px}
+
+/* ═════ قصة المشروع: صور كبيرة متناوبة ═════ */
+.story{padding-block:clamp(64px,9vw,112px)}
+.story .h-title{margin-bottom:12px}
+.story-intro{color:var(--text-2);font-size:1.1rem;max-width:52ch;margin-bottom:clamp(36px,6vw,64px)}
+.story-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(40px,7vw,96px)}
+.story-item{display:grid;grid-template-columns:1fr;gap:20px;max-width:1200px;margin-inline:auto;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.story-img{margin:0;overflow:hidden;border-radius:24px;background:var(--stone)}
+.story-img img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
+.story-txt{display:flex;flex-direction:column;gap:10px;max-width:46ch}
+.story-n{font:700 clamp(64px,8vw,104px)/.9 var(--f-display);color:var(--blue);letter-spacing:-2px}
+.story-txt h3{font:700 clamp(1.6rem,3vw,2.3rem)/1.2 var(--f-display);margin:0}
+.story-txt p{color:var(--text-2);font-size:1.08rem;line-height:1.85}
+@media (min-width:900px){
+  .story-item{grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:center;gap:56px;padding-inline:24px}
+  .story-item:nth-child(even){grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .story-item:nth-child(even) .story-img{order:2}
+  .story-item:nth-child(even) .story-txt{order:1}
+}
+.story-cta{margin-top:clamp(40px,6vw,72px)}
+/* صورة تتسع قليلًا حين تصل لمنتصف الشاشة: حركة تجيب على تمرير الزائر */
+@media (prefers-reduced-motion:no-preference){
+  @supports (animation-timeline: view()){
+    .story-img img{animation:story-in linear both;animation-timeline:view();animation-range:entry 0% cover 45%}
+    @keyframes story-in{from{transform:scale(1.12)}to{transform:none}}
+  }
+}
