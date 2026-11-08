@@ -40,7 +40,7 @@
     </div>
     {% if mine and r.status=='تم تقديم عرض السعر' %}<span class="btn orange sm">راجع العرض</span>
     {% elif mine and not r.office_name and r.status=='جديد' %}<span class="btn orange sm">اختر المكتب</span>
-    {% else %}<span class="go">التفاصيل ←</span>{% endif %}
+    {% else %}<span class="go">التفاصيل</span>{% endif %}
   </a>
   {% else %}
   <div class="card empty">

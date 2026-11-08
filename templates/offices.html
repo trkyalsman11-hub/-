@@ -4,7 +4,7 @@
 {% block description %}دليل المكاتب الهندسية في الرياض وشقراء على منصة بناء وتأثيث: الأسعار للمتر المربع والتقييمات وأرقام التواصل، مع ترتيب حسب التقييم أو السعر.{% endblock %}
 {% block content %}
 <div class="head">
-  <div class="stack" style="gap:8px"><span class="eyebrow">دليل المكاتب</span><h1 style="font-size:clamp(1.9rem,4vw,2.6rem)">المكاتب الهندسية</h1><p class="muted">{{ rows|length }} مكتب · الأسعار للمتر المربع من مساحة التصميم</p></div>
+  <div class="stack" style="gap:8px"><h1 style="font-size:clamp(1.9rem,4vw,2.6rem)">المكاتب الهندسية</h1><p class="muted">{{ rows|length }} مكتب · الأسعار للمتر المربع من مساحة التصميم</p></div>
   <form class="row" style="gap:14px">
     <nav class="seg" aria-label="المدينة">
       <a href="{{ url_for('offices', sort=sort) }}"{% if not city %} aria-current="true"{% endif %}>الكل</a>

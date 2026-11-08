@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from '_ui.html' import illus, office_card, stars, icon with context %}
+{% from '_ui.html' import stars with context %}
 {% block title %}بناء وتأثيث · منصة تربط المالك بالمكتب الهندسي والمقاول{% endblock %}
 {% block head_extra %}<script type="application/ld+json">{{ {
   "@context": "https://schema.org", "@type": "Organization",
@@ -8,157 +8,110 @@
   "description": "منصة تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري، من كراسة المتطلبات حتى التأثيث.",
   "areaServed": ["الرياض", "شقراء"],
   "address": {"@type": "PostalAddress", "addressLocality": "الرياض", "addressCountry": "SA"}
-}|tojson }}</script>{% endblock %}
+}|tojson }}</script>
+<link rel="preload" as="image" type="image/webp" href="{{ url_for('static', filename='img/hero-villa.webp') }}" imagesrcset="{{ url_for('static', filename='img/hero-villa-m.webp') }} 1000w, {{ url_for('static', filename='img/hero-villa.webp') }} 2200w" imagesizes="100vw">{% endblock %}
 {% block main %}
-<div class="wrap">
-<section class="hero">
-  <div class="txt">
-    <span class="chip"><span class="dot"></span>منصة تطوير عقاري رقمية</span>
-    <h1>من مخطط الأرض<br>إلى مفتاح البيت</h1>
-    <p class="lead">نربطك بالمكتب الهندسي المناسب لمشروعك، برقم طلب واحد تتابع به كل مرحلة، وتحديثات تصلك على واتساب.</p>
-    <div class="row" style="align-items:center">
-      {% if session.user_id and can('create') %}<a class="btn lg" href="{{ url_for('new_request') }}">ابدأ طلبك</a>
-      {% elif session.user_id %}<a class="btn lg" href="{{ url_for('home') }}">استعرض الطلبات</a>
-      {% else %}<a class="btn lg" href="{{ url_for('register') }}">ابدأ طلبك مجانًا</a>{% endif %}
-      <a class="btn ghost lg" href="{{ url_for('offices') }}">تصفح المكاتب الهندسية</a>
-    </div>
-    <div class="hero-stats">
-      <div><b>{{ stats.offices }}</b><span>مكاتب هندسية مسجّلة</span></div>
-      <div><b>3</b><span>مكاتب مرشحة لكل طلب</span></div>
-      <div><b>48 ساعة</b><span>أقصى مدة للرد على التسعير</span></div>
+
+{# ───── الواجهة: صورة كاملة العرض، والعنوان ونموذج البدء فوقها ───── #}
+<section class="h-hero" aria-labelledby="hero-h">
+  <picture class="h-hero-img">
+    <img src="{{ url_for('static', filename='img/hero-villa.webp') }}"
+         srcset="{{ url_for('static', filename='img/hero-villa-m.webp') }} 1000w, {{ url_for('static', filename='img/hero-villa.webp') }} 2200w"
+         sizes="100vw" width="2200" height="1467" alt="فيلا حديثة بيضاء بواجهة زجاجية ومسبح" fetchpriority="high">
+  </picture>
+  <div class="wrap h-hero-in">
+    <div class="h-panel">
+      <h1 id="hero-h">من مخطط الأرض<br>إلى مفتاح البيت</h1>
+      <p class="h-lead">اكتب ما تحتاجه مرة واحدة. نرشّح لك أنسب ثلاثة مكاتب هندسية في مدينتك، وتتابع كل مرحلة برقم طلب واحد يصلك على واتساب.</p>
+      <form class="h-form" action="{{ url_for('new_request') }}" method="get">
+        <div><label for="q_type">ماذا تحتاج؟</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
+        <div><label for="q_city">في أي مدينة؟</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
+        <button class="btn orange lg">ابدأ طلبك</button>
+      </form>
+      <p class="h-note">{{ stats.offices }} مكاتب هندسية في {{ cities|join(' و') }}، والرد على التسعير خلال 48 ساعة. <a href="{{ url_for('offices') }}">تصفح المكاتب</a></p>
     </div>
   </div>
-  <div class="art tilt" data-tilt>{{ illus('owner') }}</div>
 </section>
 
-<form class="card lift quick" action="{{ url_for('new_request') }}" method="get" aria-labelledby="quick-h">
-  <h2 id="quick-h" class="quick-t">ابدأ طلبك في أقل من دقيقتين</h2>
-  <div class="quick-f"><label for="q_type">نوع الخدمة</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
-  <div class="quick-f"><label for="q_city">المدينة</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
-  <button class="btn orange lg">ابدأ الطلب {{ icon('arrow', 20) }}</button>
-</form>
+{# ───── مراحل المشروع: تسلسل حقيقي فالترقيم مبرَّر ───── #}
+<section class="wrap h-sec" id="journey" aria-labelledby="journey-h">
+  <h2 id="journey-h" class="h-title">كيف يسير مشروعك</h2>
+  <ol class="h-steps">
+    <li>
+      <img src="{{ url_for('static', filename='img/step-plan.webp') }}" width="1000" height="563" loading="lazy" decoding="async" alt="مهندس يرسم مخططًا معماريًا على طاولة">
+      <span class="h-step-n" aria-hidden="true">1</span>
+      <h3>المخطط</h3>
+      <p>تكتب كراسة متطلباتك: المدينة والمساحة والميزانية والطراز. نرشّح لك ثلاثة مكاتب، ونوضح سبب كل ترشيح.</p>
+    </li>
+    <li>
+      <img src="{{ url_for('static', filename='img/step-build.webp') }}" width="1000" height="662" loading="lazy" decoding="async" alt="عمال بخوذ وسترات برتقالية في موقع بناء بين حديد التسليح">
+      <span class="h-step-n" aria-hidden="true">2</span>
+      <h3>البناء</h3>
+      <p>يقدّم المكتب عرضه خلال 48 ساعة وتعتمده من لوحتك. كل تحديث على طلبك يصلك برسالة.</p>
+    </li>
+    <li>
+      <img src="{{ url_for('static', filename='img/step-furnish.webp') }}" width="1000" height="527" loading="lazy" decoding="async" alt="مجلس حديث مؤثث بكنب رمادي وإضاءة دافئة">
+      <span class="h-step-n" aria-hidden="true">3</span>
+      <h3>التأثيث</h3>
+      <p>تستلم بيتك وتنتقل للتأثيث، ويبقى سجل مشروعك كاملًا محفوظًا برقم طلبك.</p>
+    </li>
+  </ol>
+</section>
 
-<section class="sec" aria-labelledby="svc-h">
-  <div class="head" style="margin-bottom:24px"><div><span class="eyebrow">خدماتنا</span><h2 id="svc-h" class="big">كل ما يحتاجه مشروعك، من مكان واحد</h2></div></div>
-  <div class="services">
-    {% for t, ic, d in [
-      ('تصميم هندسي','design','مخططات معمارية وإنشائية من مكاتب معتمدة.'),
-      ('إشراف هندسي','supervise','مهندس يتابع التنفيذ ويعتمد كل مرحلة.'),
-      ('مقاولات','build','طرح المخططات المعتمدة على المقاولين.'),
-      ('تأثيث وديكور','furnish','تأثيث البيت بعد الاستلام.'),
-      ('تطوير عقاري','develop','إدارة مشاريع المطورين من لوحة واحدة.')] %}
-    <a class="card svc" href="{{ url_for('new_request', type=t) }}"><span class="svc-i">{{ icon(ic, 26) }}</span><span class="svc-b"><b>{{ t }}</b><span>{{ d }}</span></span><span class="svc-go" aria-hidden="true">{{ icon('arrow', 18) }}</span></a>
+{# ───── الترشيح: الشرح بجانب مثال محسوب فعليًا ───── #}
+<section class="h-match-band" aria-labelledby="match-h">
+  <div class="wrap h-match">
+    <div class="h-match-txt">
+      <h2 id="match-h" class="h-title">نرشّح لك ثلاثة مكاتب، ونقول لك ليش</h2>
+      <p>نقارن كل مكتب بطلبك على ثلاثة معايير، ونعرض نسبة التوافق وأسبابها قبل أن تختار. القرار لك دائمًا.</p>
+      <dl class="h-weights">
+        {% for n, w in [('المدينة',40),('التقييم',35),('السعر',25)] %}<div><dt>{{ n }}</dt><dd><span class="h-bar"><i style="width:{{ w }}%"></i></span><b>{{ w }}%</b></dd></div>{% endfor %}
+      </dl>
+    </div>
+    {% if example_matches %}
+    <figure class="h-example">
+      <figcaption>مثال: فيلا في {{ example.city }} على أرض {{ example.area_m2 }} م²، محسوب من بيانات المكاتب الحالية</figcaption>
+      <ol>
+        {% for m in example_matches %}
+        <li class="{{ 'top' if loop.first }}"><b class="h-score">{{ m.score }}%</b><span><strong>{{ m.office.name }}</strong><small>{{ m.reasons|join('، ') }}</small></span></li>
+        {% endfor %}
+      </ol>
+    </figure>
+    {% endif %}
+  </div>
+</section>
+
+{# ───── المكاتب: قائمة دليل لا بطاقات ───── #}
+<section class="wrap h-sec" aria-labelledby="top-h">
+  <div class="h-sec-head"><h2 id="top-h" class="h-title">مكاتب بأعلى تقييم</h2><a href="{{ url_for('offices') }}">كل المكاتب الهندسية</a></div>
+  <ul class="h-offices">
+    {% for o in top %}
+    <li><span class="h-off-name">{{ o.name }}</span><span class="h-off-city">{{ o.city }}</span>{{ stars(o.rating) }}<span class="h-off-price">{{ o.price_per_m2|int }} <small>ريال للمتر</small></span>{% if o.phone %}<a class="phone" href="tel:{{ o.phone }}">{{ o.phone }}</a>{% endif %}</li>
     {% endfor %}
-  </div>
+  </ul>
 </section>
 
-<section class="sec" aria-labelledby="roles-h">
-  <div class="head" style="margin-bottom:28px">
-    <div><span class="eyebrow">لكل طرف مساحته</span><h2 id="roles-h" class="big">منصة واحدة، أربعة أدوار</h2></div>
-    <p class="muted" style="max-width:44ch">كل حساب يرى الطلبات والصلاحيات الخاصة به فقط.</p>
-  </div>
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
-    {% for kind, name, text in [
-      ('owner','المالك','يكتب كراسة متطلباته، يختار من أفضل 3 مكاتب، ويتابع طلبه حتى استلام المفتاح.'),
-      ('office','المكتب الهندسي','يستقبل طلبات جاهزة ببياناتها، يقدّم عرض التصميم، ويحدّث المراحل بضغطة.'),
-      ('contractor','المقاول','يطّلع على المخططات المعتمدة وينافس بعرضه. الحسابات تفتح قريبًا.'),
-      ('developer','المطور العقاري','يدير الطلبات المفتوحة، يُسندها للمكاتب، ويتابع مشاريعه من لوحة واحدة.')] %}
-    <article class="card card-illus">{{ illus(kind) }}<div class="body"><h3>{{ name }}{% if kind=='contractor' %} <span class="pill soon">قريبًا</span>{% endif %}</h3><p>{{ text }}</p></div></article>
-    {% endfor %}
-  </div>
-</section>
-</div>
-
-<section class="dark-band" id="journey" aria-labelledby="journey-h">
-  <div class="wrap">
-    <span class="eyebrow">رحلة المشروع</span>
-    <h2 id="journey-h" class="big" style="font-size:clamp(1.6rem,3.2vw,2.1rem);margin-top:4px">خمس مراحل، ورقم طلب واحد</h2>
-    <ol class="journey">
-      <li><span class="n">01</span><b>كراسة المتطلبات</b><span>المساحة والموقع والميزانية والطراز المعماري</span></li>
-      <li><span class="n">02</span><b>المكتب الهندسي</b><span>ترشيح ذكي لأفضل 3 مكاتب مع نسبة التوافق</span></li>
-      <li><span class="n">03</span><b>المقاولون والإشراف</b><span>طرح المخططات واستقبال عروض المقاولين</span></li>
-      <li><span class="n">04</span><b>الربط التمويلي</b><span>رفع العقود للبنك أو شركة التمويل</span></li>
-      <li><span class="n">05</span><b>التأثيث</b><span>الشراء من متاجر الأثاث الشريكة</span></li>
-    </ol>
-  </div>
-</section>
-
-<div class="wrap">
-<section class="sec" style="padding-block:72px;display:flex;flex-wrap:wrap;gap:48px;align-items:center" aria-labelledby="match-h">
-  <div class="stack" style="flex:1 1 380px;min-width:0;gap:16px">
-    <span class="eyebrow">الترشيح الذكي</span>
-    <h2 id="match-h" class="big" style="margin:0">نختار لك أنسب 3 مكاتب، ونقول لك ليش</h2>
-    <p style="color:var(--text-2)">نقارن كل مكتب بطلبك على ثلاثة معايير، ونعرض نسبة التوافق وأسبابها قبل ما تختار.</p>
-    <div class="weights">
-      {% for n, w in [('المدينة',40),('التقييم',35),('السعر',25)] %}<div><span>{{ n }}</span><span class="meter" style="margin:0"><i style="width:{{ w }}%"></i></span><b>{{ w }}%</b></div>{% endfor %}
-    </div>
-  </div>
-  {% if example_matches %}
-  <div class="card lift match-demo" style="flex:1 1 460px">
-    <div class="head" style="align-items:center"><span style="font-weight:600">مثال: فيلا سكنية · {{ example.city }} · {{ example.area_m2 }} م²</span><span class="muted" style="font-size:13px">محسوب من بيانات المكاتب الحالية</span></div>
-    {% for m in example_matches %}
-    <div class="m-row{{ ' best' if loop.first }}"><b>{{ m.score }}%</b><div class="t"><div style="font-weight:600">{{ m.office.name }}</div><div class="muted" style="font-size:14px">{{ m.reasons|join(' · ') }}</div></div>{% if loop.first %}<span class="pill solid-orange">الأنسب</span>{% endif %}</div>
-    {% endfor %}
-  </div>
-  {% endif %}
-</section>
-
-<section style="padding-bottom:72px" aria-labelledby="why-h">
-  <div class="head" style="margin-bottom:24px"><div><span class="eyebrow">لماذا بناء وتأثيث</span><h2 id="why-h" class="big">وضوح في كل خطوة</h2></div></div>
-  <div class="why">
-    <div class="why-i"><span class="svc-i">{{ icon('match') }}</span><b>ترشيح شفاف</b><p>نعرض نسبة توافق كل مكتب وأسبابها: المدينة 40% والتقييم 35% والسعر 25%.</p></div>
-    <div class="why-i"><span class="svc-i">{{ icon('clock') }}</span><b>رد خلال 48 ساعة</b><p>أقصى مدة يقدّم فيها المكتب عرض التسعير بعد إسناد الطلب.</p></div>
-    <div class="why-i"><span class="svc-i">{{ icon('chat') }}</span><b>كل تحديث على واتساب</b><p>رقم طلب واحد، وكل تغيير في الحالة يصلك برسالة وتتابعه من صفحة التتبع.</p></div>
-    <div class="why-i"><span class="svc-i">{{ icon('star') }}</span><b>تقييمات حقيقية فقط</b><p>يقيّم المكتب ملاك أكملوا طلبًا فعليًا برقم طلب، لا تقييمات شكلية.</p></div>
-  </div>
-</section>
-
-<section style="padding-bottom:72px" aria-labelledby="escrow-h">
-  <div class="card escrow">
-    <div class="stack" style="flex:1 1 320px;min-width:0;gap:10px">
-      <span class="pill soon" style="align-self:flex-start">قريبًا</span>
-      <h2 id="escrow-h" style="font-size:28px;line-height:1.4">دفعاتك محمية بحساب ضمان</h2>
-      <p style="color:var(--text-2)">تُودع الدفعة لدى بنك شريك مرخّص، ولا تُصرف للمقاول إلا بعد اعتماد المهندس المشرف للمرحلة.</p>
-    </div>
-    <ol>
-      <li><b>إيداع الدفعة</b><span>في حساب الضمان</span></li>
-      <li><b>تنفيذ المرحلة</b><span>من المقاول</span></li>
-      <li><b>فحص ميداني</b><span>واعتماد المشرف</span></li>
-      <li class="ok"><b>صرف الدفعة</b><span>والانتقال للمرحلة التالية</span></li>
-    </ol>
-  </div>
-</section>
-
-<section style="padding-bottom:72px" aria-labelledby="top-h">
-  <div class="head" style="margin-bottom:24px"><h2 id="top-h" class="big">مكاتب بأعلى تقييم</h2><a class="link-arrow" href="{{ url_for('offices') }}">كل المكاتب ←</a></div>
-  <div class="offices">{% for o in top %}{{ office_card(o) }}{% endfor %}</div>
-</section>
-
-<section style="padding-bottom:72px" aria-labelledby="faq-h">
-  <div class="faq-wrap">
-    <div><span class="eyebrow">أسئلة شائعة</span><h2 id="faq-h" class="big">قبل ما تبدأ</h2></div>
-    <div class="faq">
-      <details><summary>كيف تختارون المكاتب المرشحة لطلبي؟</summary><p>نقارن كل مكتب بطلبك على ثلاثة معايير: المدينة 40% والتقييم 35% والسعر 25%، ونعرض لك أفضل 3 مكاتب مع نسبة التوافق وأسبابها، والقرار لك.</p></details>
-      <details><summary>كيف أتابع طلبي؟</summary><p>يصلك رقم طلب بالشكل BT-2026-00001 على واتساب، وكل تحديث يصلك برسالة. وتقدر تتابع من صفحة «تتبع طلب» برقم الطلب وآخر 4 أرقام من جوالك بدون تسجيل دخول.</p></details>
-      <details><summary>في أي المدن تعمل المنصة؟</summary><p>المكاتب المسجّلة حاليًا في {{ cities|join(' و') }}، ونضيف مدنًا جديدة مع انضمام المكاتب.</p></details>
-      <details><summary>متى يصلني عرض السعر؟</summary><p>يقدّم المكتب عرضه خلال 48 ساعة كحد أقصى من إسناد الطلب إليه.</p></details>
-      <details><summary>أنا مكتب هندسي، كيف أنضم؟</summary><p>أنشئ حسابًا بنوع «مكتب هندسي» واختر مكتبك من القائمة، وستصلك الطلبات المُسندة إليك ببياناتها الكاملة.</p></details>
+{# ───── دعوة المكاتب: صورة موقع حقيقية ───── #}
+<section class="h-join" aria-labelledby="join-h">
+  <img src="{{ url_for('static', filename='img/band-site.webp') }}" width="1400" height="933" loading="lazy" decoding="async" alt="فريق مهندسين بخوذ السلامة في موقع إنشاء واسع">
+  <div class="wrap h-join-in">
+    <div class="h-join-panel">
+      <h2 id="join-h">مكتب هندسي في الرياض أو شقراء؟</h2>
+      <p>سجّل مكتبك واستقبل طلبات ملاك جاهزة ببياناتها الكاملة: المدينة والمساحة والميزانية والطراز.</p>
+      <a class="btn orange lg" href="{{ url_for('register', role='office') }}">سجّل مكتبك</a>
     </div>
   </div>
 </section>
 
-<section style="padding-bottom:80px">
-  <div class="cta-band">
-    <div style="flex:1 1 420px;min-width:0"><h2 style="font-size:30px;line-height:1.4;margin-bottom:8px">مكتب هندسي أو مطور عقاري؟</h2><p>سجّل منشأتك واستقبل طلبات جاهزة ببياناتها الكاملة من ملاك في مدينتك.</p></div>
-    <a class="btn orange lg" href="{{ url_for('register', role='office') }}">سجّل منشأتك</a>
+{# ───── أسئلة شائعة ───── #}
+<section class="wrap h-sec h-faq" aria-labelledby="faq-h">
+  <h2 id="faq-h" class="h-title">أسئلة قبل أن تبدأ</h2>
+  <div class="faq">
+    <details><summary>كيف تختارون المكاتب المرشحة لطلبي؟</summary><p>نقارن كل مكتب بطلبك: المدينة 40% والتقييم 35% والسعر 25%. نعرض لك أفضل ثلاثة مع نسبة التوافق وأسبابها، وأنت تختار.</p></details>
+    <details><summary>كيف أتابع طلبي؟</summary><p>يصلك رقم طلب مثل BT-2026-00001، وكل تحديث يصلك برسالة. وتقدر تتابع من صفحة «تتبع طلب» برقم الطلب وآخر 4 أرقام من جوالك، بدون تسجيل دخول.</p></details>
+    <details><summary>في أي المدن تعمل المنصة؟</summary><p>المكاتب المسجّلة حاليًا في {{ cities|join(' و') }}، ونضيف مدنًا جديدة مع انضمام المكاتب.</p></details>
+    <details><summary>متى يصلني عرض السعر؟</summary><p>خلال 48 ساعة كحد أقصى من إسناد الطلب إلى المكتب.</p></details>
+    <details><summary>هل دفعاتي للمقاول محمية؟</summary><p>نعمل على حساب ضمان مع بنك شريك، تُصرف فيه الدفعة بعد اعتماد المهندس المشرف للمرحلة. الخدمة لم تُفعّل بعد.</p></details>
   </div>
 </section>
-</div>
 {% endblock %}
-{% block scripts %}<script>
-(function(){var el=document.querySelector('[data-tilt]');if(!el||matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover: hover)').matches)return;
-var svg=el.querySelector('.illus'),raf=0;
-el.addEventListener('pointermove',function(e){var r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
-cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){svg.style.transform='rotateY('+(x*10).toFixed(2)+'deg) rotateX('+(-y*8).toFixed(2)+'deg)'})});
-el.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);svg.style.transform=''})})();
-</script>{% endblock %}
