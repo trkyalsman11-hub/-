@@ -1,14 +1,10 @@
 {% extends 'base.html' %}
-{% from '_ui.html' import progress, status as pill, timeline with context %}
+{% from '_ui.html' import progress, status as pill, timeline, page_banner with context %}
 {% block title %}تتبع طلب · بناء وتأثيث{% endblock %}
 {% block description %}تتبع طلبك على منصة بناء وتأثيث برقم الطلب وآخر 4 أرقام من جوالك، بدون تسجيل دخول.{% endblock %}
 {% block page_class %} narrow{% endblock %}
+{% block banner %}{{ page_banner('step-site', 'تتبع طلبك', 'بدون تسجيل دخول. رقم الطلب موجود في رسالة التأكيد اللي وصلتك على واتساب.', '62% 50%') }}{% endblock %}
 {% block content %}
-<div class="stack" style="text-align:center;align-items:center;gap:8px;padding-top:20px">
-  <span class="chip" style="align-self:center">بدون تسجيل دخول</span>
-  <h1 style="font-size:clamp(2rem,4.5vw,2.5rem)">تتبع طلبك</h1>
-  <p class="muted">رقم الطلب موجود في رسالة التأكيد اللي وصلتك على واتساب.</p>
-</div>
 <form class="card row" style="padding:22px;gap:14px">
   <div style="flex:2 1 220px;min-width:0"><label for="no">رقم الطلب</label><input id="no" name="no" class="mono-in" value="{{ no }}" placeholder="BT-2026-00001" required dir="ltr" autocomplete="off" spellcheck="false"></div>
   <div style="flex:1 1 150px;min-width:0"><label for="phone4">آخر 4 أرقام من الجوال</label><input id="phone4" name="phone4" class="mono-in" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" required dir="ltr" autocomplete="off"></div>

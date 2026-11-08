@@ -1,19 +1,23 @@
 {% extends 'base.html' %}
-{% from '_ui.html' import office_card with context %}
+{% from '_ui.html' import page_banner, stars with context %}
 {% block title %}المكاتب الهندسية · بناء وتأثيث{% endblock %}
 {% block description %}دليل المكاتب الهندسية في الرياض وشقراء على منصة بناء وتأثيث: الأسعار للمتر المربع والتقييمات وأرقام التواصل، مع ترتيب حسب التقييم أو السعر.{% endblock %}
+{% block banner %}{{ page_banner('step-office', 'المكاتب الهندسية', rows|length ~ ' مكتب في ' ~ cities|join(' و') ~ '. الأسعار للمتر المربع من مساحة التصميم، والتقييمات من ملاك أكملوا طلباتهم.', '72% 50%') }}{% endblock %}
 {% block content %}
-<div class="head">
-  <div class="stack" style="gap:8px"><h1 style="font-size:clamp(1.9rem,4vw,2.6rem)">المكاتب الهندسية</h1><p class="muted">{{ rows|length }} مكتب · الأسعار للمتر المربع من مساحة التصميم</p></div>
-  <form class="row" style="gap:14px">
-    <nav class="seg" aria-label="المدينة">
-      <a href="{{ url_for('offices', sort=sort) }}"{% if not city %} aria-current="true"{% endif %}>الكل</a>
-      {% for c in cities %}<a href="{{ url_for('offices', city=c, sort=sort) }}"{% if c==city %} aria-current="true"{% endif %}>{{ c }}</a>{% endfor %}
-    </nav>
-    <input type="hidden" name="city" value="{{ city }}">
-    <div style="min-width:190px"><label for="sort">الترتيب</label><select id="sort" name="sort" onchange="this.form.submit()"><option value="rating" {{ 'selected' if sort=='rating' }}>الأعلى تقييمًا</option><option value="price" {{ 'selected' if sort=='price' }}>الأقل سعرًا</option></select></div>
-    <noscript><button class="btn">ترتيب</button></noscript>
-  </form>
-</div>
-<div class="offices">{% for o in rows %}{{ office_card(o) }}{% endfor %}</div>
+<form class="head off-filter">
+  <nav class="seg" aria-label="المدينة">
+    <a href="{{ url_for('offices', sort=sort) }}"{% if not city %} aria-current="true"{% endif %}>كل المدن</a>
+    {% for c in cities %}<a href="{{ url_for('offices', city=c, sort=sort) }}"{% if c==city %} aria-current="true"{% endif %}>{{ c }}</a>{% endfor %}
+  </nav>
+  <input type="hidden" name="city" value="{{ city }}">
+  <div style="min-width:200px"><label for="sort">الترتيب</label><select id="sort" name="sort" onchange="this.form.submit()"><option value="rating" {{ 'selected' if sort=='rating' }}>الأعلى تقييمًا</option><option value="price" {{ 'selected' if sort=='price' }}>الأقل سعرًا</option></select></div>
+  <noscript><button class="btn">ترتيب</button></noscript>
+</form>
+<ul class="h-offices">
+  {% for o in rows %}
+  <li><span class="h-off-name">{{ o.name }}</span><span class="h-off-city">{{ o.city }}</span>{{ stars(o.rating) }}<span class="h-off-price">{{ o.price_per_m2|int }} <small>ريال للمتر</small></span>{% if o.phone %}<a class="phone" href="tel:{{ o.phone }}">{{ o.phone }}</a>{% endif %}</li>
+  {% else %}<li class="muted">لا توجد مكاتب في هذه المدينة بعد.</li>
+  {% endfor %}
+</ul>
+{% if not session.user_id %}<p class="off-cta">تريد ترشيحًا لطلبك تحديدًا؟ <a class="btn" href="{{ url_for('register') }}">ابدأ طلبك</a></p>{% endif %}
 {% endblock %}

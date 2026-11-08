@@ -12,24 +12,38 @@
 <link rel="preload" as="image" type="image/webp" href="{{ url_for('static', filename='img/hero-owner.webp') }}" imagesrcset="{{ url_for('static', filename='img/hero-owner-m.webp') }} 960w, {{ url_for('static', filename='img/hero-owner.webp') }} 1672w" imagesizes="100vw">{% endblock %}
 {% block main %}
 
-{# ───── الواجهة: صورة كاملة العرض، والعنوان ونموذج البدء فوقها ───── #}
-<section class="h-hero" aria-labelledby="hero-h">
-  <picture class="h-hero-img">
-    <img src="{{ url_for('static', filename='img/hero-owner.webp') }}"
-         srcset="{{ url_for('static', filename='img/hero-owner-m.webp') }} 960w, {{ url_for('static', filename='img/hero-owner.webp') }} 1672w"
-         sizes="100vw" width="1672" height="941" alt="مالك سعودي يحمل مفتاح بيته الجديد أمام فيلا حديثة وقت الغروب" fetchpriority="high">
-  </picture>
-  <div class="wrap h-hero-in">
-    <div class="h-panel">
-      <h1 id="hero-h">من مخطط الأرض<br>إلى مفتاح البيت</h1>
-      <p class="h-lead">اكتب ما تحتاجه مرة واحدة. نرشّح لك أنسب ثلاثة مكاتب هندسية في مدينتك، وتتابع كل مرحلة برقم طلب واحد يصلك على واتساب.</p>
-      <form class="h-form" action="{{ url_for('new_request') }}" method="get">
-        <div><label for="q_type">ماذا تحتاج؟</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
-        <div><label for="q_city">في أي مدينة؟</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
-        <button class="btn orange lg">ابدأ طلبك</button>
-      </form>
-      <p class="h-note">{{ stats.offices }} مكاتب هندسية في {{ cities|join(' و') }}، والرد على التسعير خلال 48 ساعة. <a href="{{ url_for('offices') }}">تصفح المكاتب</a></p>
+{# ───── الواجهة: المالك أمام بيته، ومع التمرير ندخل معه إلى المجلس ───── #}
+<section class="h-hero walk" data-walk aria-labelledby="hero-h">
+  <div class="walk-stage">
+    <picture class="h-hero-img walk-out">
+      <img src="{{ url_for('static', filename='img/hero-owner.webp') }}"
+           srcset="{{ url_for('static', filename='img/hero-owner-m.webp') }} 960w, {{ url_for('static', filename='img/hero-owner.webp') }} 1672w"
+           sizes="100vw" width="1672" height="941" alt="مالك سعودي يحمل مفتاح بيته الجديد أمام فيلا حديثة وقت الغروب" fetchpriority="high"
+           data-door-x="0.87" data-door-y="0.52">
+    </picture>
+    <picture class="walk-in" aria-hidden="true">
+      <img src="{{ url_for('static', filename='img/inside-majlis.webp') }}"
+           srcset="{{ url_for('static', filename='img/inside-majlis-m.webp') }} 960w, {{ url_for('static', filename='img/inside-majlis.webp') }} 1672w"
+           sizes="100vw" width="1672" height="941" alt="" loading="lazy" decoding="async">
+    </picture>
+    <div class="wrap h-hero-in">
+      <div class="h-panel walk-panel">
+        <h1 id="hero-h">من مخطط الأرض<br>إلى مفتاح البيت</h1>
+        <p class="h-lead">اكتب ما تحتاجه مرة واحدة. نرشّح لك أنسب ثلاثة مكاتب هندسية في مدينتك، وتتابع كل مرحلة برقم طلب واحد يصلك على واتساب.</p>
+        <form class="h-form" action="{{ url_for('new_request') }}" method="get">
+          <div><label for="q_type">ماذا تحتاج؟</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
+          <div><label for="q_city">في أي مدينة؟</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
+          <button class="btn orange lg">ابدأ طلبك</button>
+        </form>
+        <p class="h-note">{{ stats.offices }} مكاتب هندسية في {{ cities|join(' و') }}، والرد على التسعير خلال 48 ساعة. <a href="{{ url_for('offices') }}">تصفح المكاتب</a></p>
+      </div>
+      <div class="h-panel walk-welcome">
+        <h2>أهلًا بك في بيتك</h2>
+        <p class="h-lead">هذه اللحظة تبدأ بطلب واحد: نختار معك المكتب الهندسي، ونتابع البناء مرحلة بمرحلة حتى تجلس في مجلسك.</p>
+        <a class="btn orange lg" href="{{ url_for('new_request') }}">ابدأ طلبك</a>
+      </div>
     </div>
+    <p class="walk-hint" aria-hidden="true"><span></span>مرّر لتدخل البيت</p>
   </div>
 </section>
 
@@ -115,3 +129,4 @@
   </div>
 </section>
 {% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/walk.js') }}" defer></script>{% endblock %}

@@ -88,13 +88,23 @@ ILLUS_BY_TYPE = {"تصميم هندسي": "office", "إشراف هندسي": "of
                  "تأثيث وديكور": "furnish", "تطوير عقاري": "developer"}
 
 
+# الصورة الحقيقية المناسبة لكل نوع خدمة (static/img/*.webp)
+PHOTO_BY_TYPE = {"تصميم هندسي": "step-office", "إشراف هندسي": "step-site", "مقاولات": "step-site",
+                 "تأثيث وديكور": "step-majlis", "تطوير عقاري": "step-site"}
+PHOTO_ALT = {"step-office": "مالكة ومهندس يراجعان مخطط فيلا في مكتب هندسي",
+             "step-site": "المالكان مع مهندس الموقع أمام بيت تحت الإنشاء",
+             "step-majlis": "زوجان يختاران أثاث المجلس",
+             "hero-owner-m": "مالك يحمل مفتاح بيته أمام فيلته"}
+
+
 def status_step(s):
     """رقم المرحلة من 1 إلى 7، و0 للطلب الملغي."""
     return FLOW.index(s) + 1 if s in FLOW else 0
 
 
 app.jinja_env.globals.update(can=can, ROLES=ROLES, STATUSES=STATUSES, FLOW=FLOW, status_class=status_class,
-                             status_step=status_step, ILLUS_BY_TYPE=ILLUS_BY_TYPE)
+                             status_step=status_step, ILLUS_BY_TYPE=ILLUS_BY_TYPE,
+                             PHOTO_BY_TYPE=PHOTO_BY_TYPE, PHOTO_ALT=PHOTO_ALT)
 
 
 # ───────────────────────── قاعدة البيانات ─────────────────────────

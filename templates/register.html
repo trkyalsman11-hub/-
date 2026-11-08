@@ -24,7 +24,7 @@
   <p class="muted">رقم الجوال يُستخدم لإرسال تحديثات الطلبات عبر واتساب.</p>
 </form>
 {% endblock %}
-{% block aside %}{{ illus('office' if sel=='office' else 'developer' if sel=='developer' else 'owner') }}<h2>كل طرف يرى ما يخصه</h2><p>المالك يتابع طلباته، والمكتب يستقبل الطلبات المُسندة إليه، والمطور يدير الطلبات المفتوحة.</p>{% endblock %}
+{% block aside %}<img src="{{ url_for('static', filename='img/step-office.webp') }}" width="1100" height="619" alt="" style="object-position:72% 50%"><div class="auth-cap"><h2>كل طرف يرى ما يخصه</h2><p>المالك يتابع طلباته، والمكتب يستقبل الطلبات المُسندة إليه، والمطور يدير الطلبات المفتوحة.</p></div>{% endblock %}
 {% block scripts %}<script>
 (function(){var f=document.getElementById('regForm'),box=document.getElementById('offBox'),sel=document.getElementById('office_id');
 function sync(){var r=f.querySelector('input[name=role]:checked');var on=r&&r.value==='office';box.hidden=!on;sel.required=on}

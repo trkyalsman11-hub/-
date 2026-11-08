@@ -64,7 +64,7 @@
 {% endblock %}
 <main id="main">
 {% block flashes %}{% set msgs = get_flashed_messages(with_categories=true) %}{% if msgs %}<div class="wrap" style="padding-top:20px;display:grid;gap:10px">{% for cat,msg in msgs %}<div class="flash {{cat}}" role="{{ 'alert' if cat=='error' else 'status' }}">{{msg}}</div>{% endfor %}</div>{% endif %}{% endblock %}
-{% block main %}<div class="wrap page{% block page_class %}{% endblock %}">{% block content %}{% endblock %}</div>{% endblock %}
+{% block main %}{% block banner %}{% endblock %}<div class="wrap page{% block page_class %}{% endblock %}">{% block content %}{% endblock %}</div>{% endblock %}
 </main>
 {% block footer %}
 {% if user %}

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from '_ui.html' import illus, progress, status as pill with context %}
+{% from '_ui.html' import photo, progress, status as pill with context %}
 {% block title %}{{ 'لوحتي' if session.role in ('owner','client') else 'الطلبات' }} · بناء وتأثيث{% endblock %}
 {% block content %}
 {% set mine = session.role in ('owner','client') %}
@@ -31,11 +31,11 @@
   {% for r in rows %}
   {% set step = status_step(r.status) %}
   <a class="card req-card" href="{{ url_for('request_detail', req_no=r.req_no) }}">
-    <div class="thumb">{{ illus(ILLUS_BY_TYPE.get(r.req_type, 'office')) }}</div>
+    <div class="thumb">{{ photo(PHOTO_BY_TYPE.get(r.req_type, 'step-office'), alt='') }}</div>
     <div class="info">
       <div class="top"><span class="req-no plain">{{ r.req_no }}</span>{{ pill(r.status) }}</div>
       <span class="title">{{ r.title }}</span>
-      <span class="muted">{{ r.req_type }} · {{ r.city }} · {{ r.office_name or 'لم يُسند لمكتب بعد' }}{% if not mine and r.owner_name %} · {{ r.owner_name }}{% endif %}</span>
+      <span class="muted">{{ r.req_type }} في {{ r.city }}، {{ r.office_name or 'لم يُسند لمكتب بعد' }}{% if not mine and r.owner_name %}، المالك {{ r.owner_name }}{% endif %}</span>
       {% if step %}{{ progress(step, thin=true, labels=false) }}{% endif %}
     </div>
     {% if mine and r.status=='تم تقديم عرض السعر' %}<span class="btn orange sm">راجع العرض</span>
@@ -44,7 +44,7 @@
   </a>
   {% else %}
   <div class="card empty">
-    {{ illus('owner' if can('create') else 'office') }}
+    {{ photo('step-office' if can('create') else 'step-site', 'empty-img') }}
     <p>{% if status %}لا توجد طلبات بحالة «{{ status }}».{% elif can('create') %}لا توجد طلبات بعد. اكتب كراسة متطلباتك ونرشّح لك أنسب 3 مكاتب.{% else %}لا توجد طلبات لهذا الحساب حاليًا.{% endif %}</p>
     {% if can('create') and not status %}<a class="btn" href="{{ url_for('new_request') }}">أنشئ أول طلب</a>{% endif %}
   </div>
