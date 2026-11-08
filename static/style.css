@@ -365,7 +365,31 @@ h2.big{font-size:clamp(1.6rem,3.2vw,2.1rem);margin-top:4px}
 .faq summary::after{content:"";flex:none;width:10px;height:10px;border-inline-start:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s ease;color:var(--muted)}
 .faq details[open] summary::after{transform:rotate(135deg)}
 .faq details p{padding:0 20px 18px;color:var(--text-2)}
-/* ميلان ثلاثي الأبعاد للرسمة الرئيسية مع حركة المؤشر (يتوقف مع تقليل الحركة) */
-.tilt{perspective:900px}
-.tilt>.illus{transform-style:preserve-3d;transition:transform .25s ease-out;will-change:transform;border-radius:22px;box-shadow:0 30px 60px -40px rgba(15,30,51,.45)}
-@media (prefers-reduced-motion:reduce){.tilt>.illus{transform:none!important}}
+
+/* ───── المشهد ثلاثي الأبعاد في الواجهة (WebGL) ───── */
+.scene3d{margin:0;display:flex;flex-direction:column;gap:12px}
+.scene3d-stage{position:relative;aspect-ratio:5/4;border-radius:24px;overflow:hidden;background:#FCEBDD;border:1px solid #F3D9C2}
+.scene3d-stage>.illus{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.scene3d-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;touch-action:pan-y;cursor:grab}
+.scene3d-stage canvas:active{cursor:grabbing}
+.scene3d.is-3d .scene3d-stage>.illus{display:none}
+.scene3d-ui{display:none;flex-direction:column;gap:10px}
+.scene3d.is-3d .scene3d-ui{display:flex}
+.scene3d-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.scene3d-t{font:600 15px var(--f-display);color:var(--text-2)}
+.scene3d-play{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--btn-line);background:var(--surface);color:var(--text);font:500 14px var(--f-body);cursor:pointer}
+.scene3d-play:hover{border-color:var(--blue);color:var(--blue)}
+.scene3d-play .i-play,.scene3d-play[aria-pressed="true"] .i-pause{display:none}
+.scene3d-play[aria-pressed="true"] .i-play{display:inline}
+.scene3d-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.scene3d-steps button{width:100%;min-height:58px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;text-align:right;font:inherit;position:relative;overflow:hidden}
+.scene3d-steps button::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;background:var(--line-2);transition:background-color .2s ease}
+.scene3d-steps button:hover{border-color:var(--blue);color:var(--text)}
+.scene3d-steps button.done::before{background:var(--blue)}
+.scene3d-steps button[aria-pressed="true"]{border-color:var(--blue);color:var(--text);background:var(--blue-soft)}
+.scene3d-steps button[aria-pressed="true"]::before{background:var(--orange)}
+.scene3d-steps .n{font:500 12px var(--f-mono);color:var(--orange-text)}
+.scene3d-steps .l{font-size:13px;font-weight:600;line-height:1.35}
+.scene3d-hint{margin:0;font-size:12.5px;color:var(--muted);text-align:center}
+@media (hover:none){.scene3d-hint{display:none}}
+@media (max-width:520px){.scene3d-steps{grid-template-columns:repeat(5,minmax(56px,1fr));overflow-x:auto;scrollbar-width:none}.scene3d-steps .l{font-size:12px}}

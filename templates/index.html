@@ -28,7 +28,20 @@
       <div><b>48 ساعة</b><span>أقصى مدة للرد على التسعير</span></div>
     </div>
   </div>
-  <div class="art tilt" data-tilt>{{ illus('owner') }}</div>
+  <figure class="art scene3d" data-house3d>
+    <div class="scene3d-stage">{{ illus('owner') }}</div>
+    <figcaption class="scene3d-ui">
+      <div class="scene3d-top"><span class="scene3d-t">بيتك من المخطط إلى المفتاح</span>
+        <button type="button" class="scene3d-play" data-play aria-pressed="false"><svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 5v14L6 12z"/></svg><span>إيقاف الحركة</span></button></div>
+      <ol class="scene3d-steps" aria-label="مراحل البناء">
+        {% for label in ['المخطط الهندسي','الهيكل الإنشائي','البناء','الواجهات النجدية','التأثيث والتسليم'] %}
+        <li><button type="button" data-step="{{ loop.index0 }}" data-label="{{ label }}" aria-pressed="{{ 'true' if loop.last else 'false' }}"><span class="n">{{ '%02d'|format(loop.index) }}</span><span class="l">{{ label }}</span></button></li>
+        {% endfor %}
+      </ol>
+      <p class="sr-only" data-live aria-live="polite"></p>
+      <p class="scene3d-hint" aria-hidden="true">اسحب المجسم لتدويره</p>
+    </figcaption>
+  </figure>
 </section>
 
 <form class="card lift quick" action="{{ url_for('new_request') }}" method="get" aria-labelledby="quick-h">
@@ -155,10 +168,4 @@
 </section>
 </div>
 {% endblock %}
-{% block scripts %}<script>
-(function(){var el=document.querySelector('[data-tilt]');if(!el||matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover: hover)').matches)return;
-var svg=el.querySelector('.illus'),raf=0;
-el.addEventListener('pointermove',function(e){var r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
-cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){svg.style.transform='rotateY('+(x*10).toFixed(2)+'deg) rotateX('+(-y*8).toFixed(2)+'deg)'})});
-el.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);svg.style.transform=''})})();
-</script>{% endblock %}
+{% block scripts %}<script type="module" src="{{ url_for('static', filename='js/house3d.js') }}"></script>{% endblock %}
