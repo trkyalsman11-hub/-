@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>شريط المنصة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<header dir="rtl" style="width: 100%; min-height: 72px; box-sizing: border-box; background: #0F1E33; color: #FFFFFF; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 12px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px;">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; color: #FFFFFF; text-decoration: none;">
+      <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#FFFFFF"></rect><path d="M10 30V10h20v20h-7" stroke="#0F1E33" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"></path><path d="M10 19h9" stroke="#0F1E33" stroke-width="2.6" stroke-linecap="round"></path><path d="M23 30a9 9 0 0 0-9-9" stroke="#E8833A" stroke-width="2.6" fill="none" stroke-linecap="round"></path></svg>
+      <span style="font-family: Alexandria, sans-serif; font-weight: 700; font-size: 18px;">بناء وتأثيث</span>
+    </a>
+    <nav aria-label="قائمة المنصة" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 380px;">
+      <sc-for list="{{links}}" as="l" hint-placeholder-count="4">
+        <a href="{{l.href}}" style="{{l.style}}">{{l.label}}</a>
+      </sc-for>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button type="button" aria-label="الإشعارات" style="position: relative; width: 44px; height: 44px; border-radius: 12px; border: 1px solid #2A3D5C; background: transparent; color: #FFFFFF; display: grid; place-items: center; cursor: pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+        <span style="position: absolute; top: 9px; left: 10px; width: 8px; height: 8px; border-radius: 50%; background: #E8833A;"></span>
+      </button>
+      <span style="display: flex; align-items: center; gap: 10px; padding: 4px 4px 4px 14px; border-radius: 999px; background: #1B2D49;">
+        <span style="display: flex; flex-direction: column; line-height: 1.2;"><b style="font-size: 14px; font-weight: 600;">{{user}}</b><span style="font-size: 12px; color: #AEB8C8;">{{roleLabel}}</span></span>
+        <span style="width: 34px; height: 34px; border-radius: 50%; background: #E8833A; color: #0F1E33; display: grid; place-items: center; font-family: Alexandria, sans-serif; font-weight: 700;">{{initial}}</span>
+      </span>
+    </div>
+  </div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"role":{"editor":"enum","options":["owner","office","admin"],"default":"owner"},"active":{"editor":"enum","options":["dash","new","requests","kpi"],"default":"dash"},"$preview":{"width":1440,"height":72}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const role = this.props.role ?? 'owner';
+    const active = this.props.active ?? 'dash';
+    const people = {
+      owner: { user: 'تركي الألمعي', roleLabel: 'المالك' },
+      office: { user: 'مكتب المنصور', roleLabel: 'المكتب الهندسي' },
+      admin: { user: 'إدارة المنصة', roleLabel: 'مدير النظام' }
+    };
+    const dash = role === 'office' ? 'OfficeDash.dc.html' : role === 'admin' ? 'AdminDash.dc.html' : 'OwnerDash.dc.html';
+    const items = [['dash', 'لوحتي', dash]];
+    if (role !== 'office') items.push(['new', 'طلب جديد', 'NewRequest.dc.html']);
+    items.push(['requests', 'الطلبات', 'RequestDetail.dc.html']);
+    if (role === 'admin') items.push(['kpi', 'المؤشرات', 'AdminDash.dc.html']);
+    const base = 'display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;font-size:15px;text-decoration:none;';
+    const p = people[role] || people.owner;
+    return {
+      user: p.user, roleLabel: p.roleLabel, initial: p.user.charAt(0),
+      links: items.map(([k, label, href]) => ({ label, href, style: base + (k === active ? 'background:#1F4FA3;color:#FFFFFF;font-weight:600;' : 'color:#C6CEDC;') }))
+    };
+  }
+}
+</script>
+</body>
+</html>

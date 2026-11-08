@@ -1,0 +1,13 @@
+{% extends '_auth.html' %}{% from '_ui.html' import illus with context %}
+{% block title %}الدخول · بناء وتأثيث{% endblock %}
+{% block form %}
+<form method="post" class="stack">
+  <h1 style="font-size:30px">أهلًا بعودتك</h1>
+  <div><label for="username">اسم المستخدم</label><input id="username" name="username" required autocomplete="username" dir="ltr" autofocus value="{{ request.form.username }}"></div>
+  <div><label for="password">كلمة المرور</label><input id="password" type="password" name="password" required autocomplete="current-password" dir="ltr"></div>
+  <button class="btn lg block">دخول</button>
+  <p class="muted">ما عندك حساب؟ <a href="{{ url_for('register') }}">أنشئ حسابًا جديدًا</a></p>
+  {% if demo %}<p class="demo">حسابات تجريبية (محليًا فقط): <span class="mono">admin · owner · developer · office · client</span> — كلمة المرور <span class="mono">123456</span></p>{% endif %}
+</form>
+{% endblock %}
+{% block aside %}{{ illus('owner') }}<h2>طلبك في مكان واحد</h2><p>تابع مراحل مشروعك، وراجع عروض المكاتب، واعتمدها من لوحتك.</p>{% endblock %}

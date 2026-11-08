@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from '_ui.html' import logo, illus with context %}
+{% block header %}{% endblock %}{% block footer %}{% endblock %}{% block flashes %}{% endblock %}
+{% block main %}
+<div class="auth">
+  <section class="form-side">
+    {{ logo() }}
+    <div class="box">
+      <nav class="tabs" aria-label="نوع العملية">
+        <a href="{{ url_for('login') }}"{% if request.endpoint=='login' %} aria-current="page"{% endif %}>دخول</a>
+        <a href="{{ url_for('register') }}"{% if request.endpoint=='register' %} aria-current="page"{% endif %}>حساب جديد</a>
+      </nav>
+      {% for cat,msg in get_flashed_messages(with_categories=true) %}<div class="flash {{cat}}" role="{{ 'alert' if cat=='error' else 'status' }}">{{msg}}</div>{% endfor %}
+      {% block form %}{% endblock %}
+    </div>
+  </section>
+  <aside aria-hidden="true"><div class="in">{% block aside %}{% endblock %}</div></aside>
+</div>
+{% endblock %}

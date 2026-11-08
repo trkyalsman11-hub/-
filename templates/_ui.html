@@ -1,0 +1,37 @@
+{# مكونات مشتركة — الهوية في .claude/skills/bina-tatheeth-design #}
+{% macro logo_mark(size=40, dark=true) -%}
+<svg width="{{size}}" height="{{size}}" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="{{ '#0F1E33' if dark else '#FFFFFF' }}"/><path d="M10 30V10h20v20h-7" stroke="{{ '#FFFFFF' if dark else '#0F1E33' }}" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M10 19h9" stroke="{{ '#FFFFFF' if dark else '#0F1E33' }}" stroke-width="2.6" stroke-linecap="round"/><path d="M23 30a9 9 0 0 0-9-9" stroke="#E8833A" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>
+{%- endmacro %}
+
+{% macro logo(dark=true, tagline=true, size=40) -%}
+<a class="logo" href="{{ url_for('index') }}" aria-label="بناء وتأثيث — الرئيسية">{{ logo_mark(size, dark) }}<span class="logo-t"><b>بناء وتأثيث</b>{% if tagline %}<small>من المخطط إلى المفتاح</small>{% endif %}</span></a>
+{%- endmacro %}
+
+{# رسمة دور ثلاثية الأبعاد: owner · office · contractor · developer · furnish · finance #}
+{% macro illus(kind) -%}{% include 'illus/' ~ kind ~ '.svg' %}{%- endmacro %}
+
+{% macro progress(step, thin=false, labels=true) -%}
+<div class="prog{{ ' thin' if thin }}" role="img" aria-label="المرحلة {{ step }} من {{ FLOW|length }}">{% for k in range(FLOW|length) %}<span class="{{ 'on' if k < step }}"></span>{% endfor %}</div>
+{% if labels %}<div class="prog-l" aria-hidden="true"><span>جديد</span><span>المرحلة {{ step }} من {{ FLOW|length }}</span><span>مكتمل</span></div>{% endif %}
+{%- endmacro %}
+
+{% macro status(s, lg=false) -%}<span class="pill {{ status_class(s) }}{{ ' lg' if lg }}">{{ s }}</span>{%- endmacro %}
+
+{% macro stars(r) -%}<span class="stars" aria-label="التقييم {{ r }} من 5">{{ '★' * (r|round|int) }}{{ '☆' * (5 - (r|round|int)) }} <small>{{ '%.1f'|format(r) }}</small></span>{%- endmacro %}
+
+{% macro office_card(o) -%}
+<article class="card oc hover">
+  <div class="bp"><span class="ini" aria-hidden="true">{{ (o.name|replace('مكتب ','')|replace('ال','',1))[:1] }}</span><span class="city">{{ o.city }}</span></div>
+  <div class="body">
+    <h3 class="name">{{ o.name }}</h3>
+    {{ stars(o.rating) }}
+    <div class="foot"><span class="price">{{ o.price_per_m2|int }} <small>ريال/م²</small></span>{% if o.phone %}<a class="phone" href="tel:{{ o.phone }}">{{ o.phone }}</a>{% endif %}</div>
+  </div>
+</article>
+{%- endmacro %}
+
+{% macro timeline(updates, show_who=true) -%}
+<ol class="tl">
+{% for u in updates %}<li class="{{ 'done' if loop.first and u.new_status in ('معتمد','مكتمل') }}"><b>{{ u.new_status }}</b> <span class="meta">{% if show_who and u.full_name %}· {{ u.full_name }} ({{ ROLES[u.role] }}) {% endif %}· <span class="mono">{{ u.created_at }}</span></span>{% if u.note %}<div class="note">{{ u.note }}</div>{% endif %}</li>
+{% endfor %}</ol>
+{%- endmacro %}

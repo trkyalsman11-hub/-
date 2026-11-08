@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% from '_ui.html' import illus, progress, status as pill with context %}
+{% block title %}{{ 'لوحتي' if session.role in ('owner','client') else 'الطلبات' }} · بناء وتأثيث{% endblock %}
+{% block content %}
+{% set mine = session.role in ('owner','client') %}
+{% set waiting = rows|selectattr('status','equalto','تم تقديم عرض السعر')|list|length %}
+{% set active = rows|selectattr('status','in',['معتمد','قيد التنفيذ'])|list|length %}
+{% set done = rows|selectattr('status','equalto','مكتمل')|list|length %}
+<div class="head">
+  <div><div class="muted">أهلًا {{ current_user().full_name }}</div>
+  <h1>{{ 'كل الطلبات' if can('view_all') else 'الطلبات المُسندة لمكتبك' if session.role=='office' else 'الطلبات المفتوحة' if session.role=='developer' else 'طلباتي' }}</h1></div>
+  {% if can('create') %}<a class="btn lg" href="{{ url_for('new_request') }}">+ طلب جديد</a>{% endif %}
+</div>
+
+{% if not status %}
+<div class="kpis">
+  <div class="kpi"><span class="k-l">{{ 'طلباتي' if mine else 'إجمالي الطلبات' }}</span><b>{{ rows|length }}</b></div>
+  <div class="kpi{{ ' attn' if waiting and mine }}"><span class="k-l">{{ 'بانتظار قرارك' if mine else 'عروض بانتظار الاعتماد' }}</span><b>{{ waiting }}</b>{% if waiting and mine %}<span class="k-s">عرض سعر جاهز للمراجعة</span>{% endif %}</div>
+  <div class="kpi"><span class="k-l">معتمد أو قيد التنفيذ</span><b>{{ active }}</b></div>
+  <div class="kpi"><span class="k-l">مكتملة</span><b>{{ done }}</b></div>
+</div>
+{% endif %}
+
+<section class="stack" aria-labelledby="list-h">
+  <div class="head" style="align-items:center">
+    <h2 id="list-h">{{ status or 'كل الحالات' }} <span class="muted" style="font-family:var(--f-body);font-weight:400">· {{ rows|length }} طلب</span></h2>
+    <form style="min-width:220px"><label for="status" class="sr-only">تصفية حسب الحالة</label>
+      <select id="status" name="status" onchange="this.form.submit()"><option value="">كل الحالات</option>{% for s in STATUSES %}<option {{ 'selected' if s==status }}>{{s}}</option>{% endfor %}</select>
+      <noscript><button class="btn sm" style="margin-top:8px">تصفية</button></noscript></form>
+  </div>
+  {% for r in rows %}
+  {% set step = status_step(r.status) %}
+  <a class="card req-card" href="{{ url_for('request_detail', req_no=r.req_no) }}">
+    <div class="thumb">{{ illus(ILLUS_BY_TYPE.get(r.req_type, 'office')) }}</div>
+    <div class="info">
+      <div class="top"><span class="req-no plain">{{ r.req_no }}</span>{{ pill(r.status) }}</div>
+      <span class="title">{{ r.title }}</span>
+      <span class="muted">{{ r.req_type }} · {{ r.city }} · {{ r.office_name or 'لم يُسند لمكتب بعد' }}{% if not mine and r.owner_name %} · {{ r.owner_name }}{% endif %}</span>
+      {% if step %}{{ progress(step, thin=true, labels=false) }}{% endif %}
+    </div>
+    {% if mine and r.status=='تم تقديم عرض السعر' %}<span class="btn orange sm">راجع العرض</span>
+    {% elif mine and not r.office_name and r.status=='جديد' %}<span class="btn orange sm">اختر المكتب</span>
+    {% else %}<span class="go">التفاصيل ←</span>{% endif %}
+  </a>
+  {% else %}
+  <div class="card empty">
+    {{ illus('owner' if can('create') else 'office') }}
+    <p>{% if status %}لا توجد طلبات بحالة «{{ status }}».{% elif can('create') %}لا توجد طلبات بعد. اكتب كراسة متطلباتك ونرشّح لك أنسب 3 مكاتب.{% else %}لا توجد طلبات لهذا الحساب حاليًا.{% endif %}</p>
+    {% if can('create') and not status %}<a class="btn" href="{{ url_for('new_request') }}">أنشئ أول طلب</a>{% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

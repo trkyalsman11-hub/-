@@ -1,0 +1,33 @@
+# ملف إعداد Render: ينشئ الموقع وقاعدة بيانات PostgreSQL ويربطهما تلقائيًا
+services:
+  - type: web
+    name: bina-tatheeth
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --preload --workers 2 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bina-tatheeth-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false        # تكتبها أنت عند الإنشاء (كلمة مرور حساب admin)
+      - key: NOTIFY_PROVIDER
+        value: console     # غيّرها إلى unifonic أو twilio بعد الاشتراك
+      - key: NOTIFY_CHANNEL
+        value: whatsapp
+      - key: DEMO_USERS
+        value: "0"
+
+databases:
+  - name: bina-tatheeth-db
+    databaseName: bina_tatheeth
+    plan: free
+    region: frankfurt

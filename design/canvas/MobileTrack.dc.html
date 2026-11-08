@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الجوال: تتبع الطلب</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 15px; line-height: 1.7; display: flex; flex-direction: column;">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E2E0DA; padding: 10px 12px; display: flex; align-items: center; gap: 8px;">
+    <a href="MobileHome.dc.html" aria-label="رجوع" style="width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #0F1E33;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+    <b style="font-family: Alexandria, sans-serif; font-size: 18px;">تتبع الطلب</b>
+  </header>
+  <div style="flex: 1; overflow: hidden; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #8A4B12; direction: ltr;">BT-2026-00001</span><span style="font-size: 12.5px; padding: 2px 10px; border-radius: 999px; background: #FCEBDD; color: #8A4B12; font-weight: 600;">تم تقديم عرض السعر</span></div>
+      <b style="font-family: Alexandria, sans-serif; font-size: 20px;">فيلا سكنية · حي النرجس</b>
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px;"><span style="height: 6px; border-radius: 3px; background: #1F4FA3;"></span><span style="height: 6px; border-radius: 3px; background: #1F4FA3;"></span><span style="height: 6px; border-radius: 3px; background: #1F4FA3;"></span><span style="height: 6px; border-radius: 3px; background: #1F4FA3;"></span><span style="height: 6px; border-radius: 3px; background: #DCDAD3;"></span><span style="height: 6px; border-radius: 3px; background: #DCDAD3;"></span><span style="height: 6px; border-radius: 3px; background: #DCDAD3;"></span></div>
+      <span style="font-size: 13px; color: #5E6470;">المرحلة 4 من 7</span>
+    </div>
+    <div style="background: #FFF8F2; border: 1.5px solid #E8833A; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+      <b>عرض السعر من مكتب المنصور</b>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #5E6470;">القيمة</span><b style="font-family: Alexandria, sans-serif;">168,000 ريال</b></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #5E6470;">المدة</span><b>45 يوم عمل</b></div>
+      <button type="button" style="min-height: 48px; border-radius: 12px; border: 0; background: #E8833A; color: #0F1E33; font: 700 15px 'IBM Plex Sans Arabic', sans-serif;">اعتماد العرض</button>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 16px;">
+      <ol style="list-style: none; margin: 0; padding: 0 16px 0 0; border-right: 2px solid #DCDAD3; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li style="position: relative;"><span style="position: absolute; right: -23px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #1F4FA3;"></span><b>تم تقديم عرض السعر</b><div style="color: #5E6470;">اليوم 10:20 ص</div></li>
+        <li style="position: relative;"><span style="position: absolute; right: -23px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #FFFFFF; border: 3px solid #1F4FA3; box-sizing: border-box;"></span><b>بانتظار المكتب الهندسي</b><div style="color: #5E6470;">6 نوفمبر 4:05 م</div></li>
+        <li style="position: relative;"><span style="position: absolute; right: -23px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #FFFFFF; border: 3px solid #1F4FA3; box-sizing: border-box;"></span><b>جديد</b><div style="color: #5E6470;">6 نوفمبر 3:40 م</div></li>
+      </ol>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

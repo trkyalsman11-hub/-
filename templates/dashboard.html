@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}المؤشرات · بناء وتأثيث{% endblock %}
+{% block content %}
+<div class="head"><div><span class="eyebrow">مؤشرات الخطة 2027–2028</span><h1>لوحة المؤشرات</h1></div><span class="muted">الأرقام من قاعدة البيانات الحالية · المستهدفات من الخطة الاستراتيجية</span></div>
+<div class="kpis">
+  <div class="kpi"><span class="k-l">ملاك وعملاء مسجّلون</span><b>{{ kpi.owners }} <small>/ 500</small></b><span class="k-s">مستهدف الشهر 9</span><div class="meter"><i style="width:{{ [100, kpi.owners/500*100]|min }}%"></i></div></div>
+  <div class="kpi"><span class="k-l">إجمالي الطلبات</span><b>{{ kpi.requests }}</b></div>
+  <div class="kpi"><span class="k-l">التحويل: الطلبات ÷ المسجّلين</span><b>{{ kpi.conversion }}%</b><span class="k-s">المستهدف 20% فأكثر</span></div>
+  <div class="kpi{{ ' attn' if kpi.contracts < 15 and kpi.requests }}"><span class="k-l">عقود معتمدة</span><b>{{ kpi.contracts }} <small>/ 15</small></b><span class="k-s">مستهدف الشهر 12</span><div class="meter"><i style="width:{{ [100, kpi.contracts/15*100]|min }}%"></i></div></div>
+  <div class="kpi"><span class="k-l">طلبات مُسندة لمكاتب</span><b>{{ kpi.assigned }}</b></div>
+  <div class="kpi"><span class="k-l">إشعارات واتساب ورسائل</span><b>{{ kpi.notify_ok }} <small>أُرسل · {{ kpi.notify_fail }} فشل</small></b></div>
+</div>
+<section class="card stack" style="gap:16px" aria-labelledby="bs-h"><h2 id="bs-h">الطلبات حسب الحالة</h2>
+  <div class="bars">{% for s in STATUSES %}{% set c = by_status.get(s, 0) %}<div><span>{{ s }}</span><span class="meter"><i style="width:{{ c/mx*100 }}%"></i></span><b>{{ c }}</b></div>{% endfor %}</div>
+</section>
+{% endblock %}

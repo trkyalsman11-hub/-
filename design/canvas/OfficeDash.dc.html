@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>لوحة المكتب الهندسي</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F4F3EF} a{color:#1F4FA3}a:hover{color:#163B7A}
+.bp{background-color:#1F4FA3;background-image:linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px);background-size:20px 20px}
+:focus-visible{outline:3px solid #E8833A;outline-offset:2px}
+a,button{transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease,filter .2s ease}
+a[href],button{cursor:pointer}
+button:hover,a[href]:hover{filter:brightness(1.06)}
+tbody tr:hover td{background:#F8F7F3}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</helmet>
+<div dir="rtl" style="width: 100%; background: #F4F3EF; color: #0F1E33; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; font-size: 16px; line-height: 1.7;">
+  <dc-import name="AppBar" role="office" active="dash" hint-size="100%,72px"></dc-import>
+
+  <div class="bp" style="color: #FFFFFF;">
+    <div style="max-width: 1240px; margin: 0 auto; padding: 32px 24px; display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center;">
+      <div><div style="color: #CFDCF2;">مكتب المنصور للهندسة والعمران · شقراء</div><h1 style="margin: 2px 0 0; font-family: Alexandria, sans-serif; font-size: 30px;">عندك طلبان ينتظران عرض السعر</h1></div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;"><span style="padding: 8px 14px; border-radius: 12px; background: rgba(255,255,255,.14);">التقييم <b>5.0</b></span><span style="padding: 8px 14px; border-radius: 12px; background: rgba(255,255,255,.14);">متوسط الرد <b>19 ساعة</b></span></div>
+    </div>
+  </div>
+
+  <section style="max-width: 1240px; margin: 0 auto; padding: 28px 24px 72px; display: flex; flex-direction: column; gap: 22px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+      <div style="background: #FFF8F2; border: 1.5px solid #E8833A; border-radius: 18px; padding: 20px;"><div style="font-size: 14px; color: #8A4B12;">بانتظار عرض السعر</div><b style="font-family: Alexandria, sans-serif; font-size: 34px; color: #8A4B12;">2</b><div style="font-size: 13px; color: #8A4B12;">أقرب مهلة بعد 7 ساعات</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px;"><div style="font-size: 14px; color: #5E6470;">بانتظار اعتماد المالك</div><b style="font-family: Alexandria, sans-serif; font-size: 34px;">1</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px;"><div style="font-size: 14px; color: #5E6470;">قيد التصميم</div><b style="font-family: Alexandria, sans-serif; font-size: 34px;">3</b></div>
+      <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 18px; padding: 20px;"><div style="font-size: 14px; color: #5E6470;">مكتملة هذا العام</div><b style="font-family: Alexandria, sans-serif; font-size: 34px;">12</b></div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E2E0DA; border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center;">
+        <h2 style="margin: 0; font-family: Alexandria, sans-serif; font-size: 22px;">الطلبات المسندة لمكتبك</h2>
+        <div role="group" aria-label="تصفية" style="display: flex; gap: 4px; padding: 4px; background: #F4F3EF; border-radius: 12px;">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{t.pick}}" aria-pressed="{{t.on}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+        </div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; min-width: 760px; border-collapse: collapse; font-size: 15px;">
+          <thead><tr style="text-align: right; color: #5E6470; font-size: 13px;"><th style="padding: 10px; font-weight: 500;">رقم الطلب</th><th style="padding: 10px; font-weight: 500;">المشروع</th><th style="padding: 10px; font-weight: 500;">المساحة</th><th style="padding: 10px; font-weight: 500;">الحالة</th><th style="padding: 10px; font-weight: 500;">المهلة</th><th style="padding: 10px; font-weight: 500;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">إجراء</span></th></tr></thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+              <tr style="border-top: 1px solid #ECEAE4;">
+                <td style="padding: 14px 10px; font-family: 'IBM Plex Mono', monospace; color: #8A4B12; direction: ltr; text-align: right;">{{r.no}}</td>
+                <td style="padding: 14px 10px;"><b>{{r.title}}</b><div style="font-size: 13px; color: #5E6470;">{{r.meta}}</div></td>
+                <td style="padding: 14px 10px;">{{r.area}}</td>
+                <td style="padding: 14px 10px;"><span style="{{r.pill}}">{{r.status}}</span></td>
+                <td style="padding: 14px 10px; color: #5E6470;">{{r.due}}</td>
+                <td style="padding: 14px 10px; text-align: left;"><a href="RequestDetail.dc.html" style="{{r.btn}}">{{r.action}}</a></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: 'all' }; }
+  renderVals() {
+    const P = { wait: 'background:#FCEBDD;color:#8A4B12;', blue: 'background:#E7EEF9;color:#1F4FA3;', ok: 'background:#E3F3EA;color:#1F7A4D;' };
+    const data = [
+      { no: 'BT-2026-00007', title: 'فيلا دورين وملحق', meta: 'شقراء · طراز نجدي', area: '450 م²', status: 'بانتظار المكتب الهندسي', k: 'wait', due: 'باقي 7 ساعات', action: 'قدّم العرض', grp: 'quote' },
+      { no: 'BT-2026-00009', title: 'استراحة', meta: 'شقراء · حديث', area: '900 م²', status: 'بانتظار المكتب الهندسي', k: 'wait', due: 'باقي 31 ساعة', action: 'قدّم العرض', grp: 'quote' },
+      { no: 'BT-2026-00001', title: 'فيلا سكنية · حي النرجس', meta: 'الرياض · نجدي', area: '600 م²', status: 'تم تقديم عرض السعر', k: 'blue', due: 'بانتظار المالك', action: 'عرض', grp: 'active' },
+      { no: 'BT-2026-00003', title: 'عمارة سكنية', meta: 'شقراء · مودرن كلاسيك', area: '750 م²', status: 'قيد التنفيذ', k: 'blue', due: 'التسليم 20 ديسمبر', action: 'تحديث الحالة', grp: 'active' },
+      { no: 'BT-2026-00002', title: 'ترميم واجهة', meta: 'شقراء', area: '220 م²', status: 'مكتمل', k: 'ok', due: '—', action: 'عرض', grp: 'done' }
+    ];
+    const tab = this.state.tab;
+    const tabs = [['all', 'الكل'], ['quote', 'بانتظار عرضي'], ['active', 'جارية'], ['done', 'مكتملة']];
+    return {
+      tabs: tabs.map(([k, label]) => ({ label, on: k === tab ? 'true' : 'false', pick: () => this.setState({ tab: k }),
+        style: 'min-height:40px;padding:0 14px;border-radius:9px;border:0;font:inherit;font-size:14px;cursor:pointer;' + (k === tab ? 'background:#FFFFFF;color:#0F1E33;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08);' : 'background:transparent;color:#5E6470;') })),
+      rows: data.filter((d) => tab === 'all' || d.grp === tab).map((d) => ({ ...d,
+        pill: 'display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;' + P[d.k],
+        btn: 'display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:10px;font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap;' + (d.grp === 'quote' ? 'background:#E8833A;color:#0F1E33;' : 'border:1px solid #C9CEDA;color:#0F1E33;') }))
+    };
+  }
+}
+</script>
+</body>
+</html>
