@@ -224,7 +224,7 @@ def login_required(f):
     @wraps(f)
     def wrapper(*a, **kw):
         if "user_id" not in session:
-            return redirect(url_for("login", next=request.path))
+            return redirect(url_for("login", next=request.full_path.rstrip("?")))
         return f(*a, **kw)
     return wrapper
 
@@ -349,7 +349,9 @@ def index():
     top = db().execute("SELECT * FROM offices ORDER BY rating DESC, price_per_m2 ASC LIMIT 3").fetchall()
     # مثال الترشيح يُحسب من بيانات المكاتب الفعلية (لا نسب مخترعة)
     example = {"city": "شقراء", "area_m2": 600, "budget": 0}
-    return render_template("index.html", stats=stats, top=top, example=example, example_matches=match_offices(example))
+    cities = [r[0] for r in db().execute("SELECT DISTINCT city FROM offices ORDER BY city").fetchall()]
+    return render_template("index.html", stats=stats, top=top, example=example, example_matches=match_offices(example),
+                           types=REQUEST_TYPES, cities=cities)
 
 
 def visible_requests_query():
@@ -407,7 +409,9 @@ def new_request():
         flash(f"تم إنشاء الطلب رقم {req_no}", "ok")
         return redirect(url_for("request_detail", req_no=req_no))
     cities = [r[0] for r in db().execute("SELECT DISTINCT city FROM offices").fetchall()]
-    return render_template("new_request.html", types=REQUEST_TYPES, styles=STYLES, cities=cities)
+    pre = {"type": request.args.get("type") if request.args.get("type") in REQUEST_TYPES else REQUEST_TYPES[0],
+           "city": request.args.get("city", "").strip()[:40]}
+    return render_template("new_request.html", types=REQUEST_TYPES, styles=STYLES, cities=cities, pre=pre)
 
 
 def load_visible_request(req_no):
