@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}المؤشرات · بناء وتأثيث{% endblock %}
 {% block content %}
-<div class="head"><div><span class="eyebrow">مؤشرات الخطة 2027–2028</span><h1>لوحة المؤشرات</h1></div><span class="muted">الأرقام من قاعدة البيانات الحالية · المستهدفات من الخطة الاستراتيجية</span></div>
+<div class="head"><div><h1>لوحة المؤشرات</h1><p class="muted">مستهدفات الخطة 2027–2028</p></div><span class="muted">الأرقام من قاعدة البيانات الحالية · المستهدفات من الخطة الاستراتيجية</span></div>
 <div class="kpis">
   <div class="kpi"><span class="k-l">ملاك وعملاء مسجّلون</span><b>{{ kpi.owners }} <small>/ 500</small></b><span class="k-s">مستهدف الشهر 9</span><div class="meter"><i style="width:{{ [100, kpi.owners/500*100]|min }}%"></i></div></div>
   <div class="kpi"><span class="k-l">إجمالي الطلبات</span><b>{{ kpi.requests }}</b></div>

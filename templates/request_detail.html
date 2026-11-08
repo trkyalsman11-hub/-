@@ -2,7 +2,7 @@
 {% from '_ui.html' import illus, progress, status as pill, stars, timeline with context %}
 {% block title %}{{ req.req_no }} · بناء وتأثيث{% endblock %}
 {% block content %}
-<a class="link-arrow" href="{{ url_for('home') }}" style="align-self:flex-start">→ {{ 'لوحتي' if session.role in ('owner','client') else 'الطلبات' }}</a>
+<a class="link-arrow" href="{{ url_for('home') }}" style="align-self:flex-start">العودة إلى {{ 'لوحتي' if session.role in ('owner','client') else 'الطلبات' }}</a>
 
 <section class="card stack" style="gap:18px">
   <div class="head" style="align-items:center">
@@ -23,7 +23,7 @@
 
 {% if matches and (can('choose_office') or can('assign')) %}
 <section class="stack" aria-labelledby="match-h">
-  <div class="head"><div><span class="eyebrow">الترشيح الذكي</span><h2 id="match-h">أفضل 3 مكاتب لطلبك</h2></div><span class="muted">المدينة 40% · التقييم 35% · السعر 25%</span></div>
+  <div class="head"><div><h2 id="match-h">أفضل 3 مكاتب لطلبك</h2></div><span class="muted">المدينة 40% · التقييم 35% · السعر 25%</span></div>
   <div class="match">{% for m in matches %}
     <article class="card{{ ' accent lift best' if loop.first }}">
       {% if loop.first %}<span class="pill solid-orange" style="align-self:flex-start">الأنسب لطلبك</span>{% endif %}
