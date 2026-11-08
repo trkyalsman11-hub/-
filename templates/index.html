@@ -9,27 +9,41 @@
   "areaServed": ["الرياض", "شقراء"],
   "address": {"@type": "PostalAddress", "addressLocality": "الرياض", "addressCountry": "SA"}
 }|tojson }}</script>
-<link rel="preload" as="image" type="image/webp" href="{{ url_for('static', filename='img/hero-villa.webp') }}" imagesrcset="{{ url_for('static', filename='img/hero-villa-m.webp') }} 1000w, {{ url_for('static', filename='img/hero-villa.webp') }} 2200w" imagesizes="100vw">{% endblock %}
+<link rel="preload" as="image" type="image/webp" href="{{ url_for('static', filename='img/hero-owner.webp') }}" imagesrcset="{{ url_for('static', filename='img/hero-owner-m.webp') }} 960w, {{ url_for('static', filename='img/hero-owner.webp') }} 1672w" imagesizes="100vw">{% endblock %}
 {% block main %}
 
-{# ───── الواجهة: صورة كاملة العرض، والعنوان ونموذج البدء فوقها ───── #}
-<section class="h-hero" aria-labelledby="hero-h">
-  <picture class="h-hero-img">
-    <img src="{{ url_for('static', filename='img/hero-villa.webp') }}"
-         srcset="{{ url_for('static', filename='img/hero-villa-m.webp') }} 1000w, {{ url_for('static', filename='img/hero-villa.webp') }} 2200w"
-         sizes="100vw" width="2200" height="1467" alt="فيلا حديثة بيضاء بواجهة زجاجية ومسبح" fetchpriority="high">
-  </picture>
-  <div class="wrap h-hero-in">
-    <div class="h-panel">
-      <h1 id="hero-h">من مخطط الأرض<br>إلى مفتاح البيت</h1>
-      <p class="h-lead">اكتب ما تحتاجه مرة واحدة. نرشّح لك أنسب ثلاثة مكاتب هندسية في مدينتك، وتتابع كل مرحلة برقم طلب واحد يصلك على واتساب.</p>
-      <form class="h-form" action="{{ url_for('new_request') }}" method="get">
-        <div><label for="q_type">ماذا تحتاج؟</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
-        <div><label for="q_city">في أي مدينة؟</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
-        <button class="btn orange lg">ابدأ طلبك</button>
-      </form>
-      <p class="h-note">{{ stats.offices }} مكاتب هندسية في {{ cities|join(' و') }}، والرد على التسعير خلال 48 ساعة. <a href="{{ url_for('offices') }}">تصفح المكاتب</a></p>
+{# ───── الواجهة: المالك أمام بيته، ومع التمرير ندخل معه إلى المجلس ───── #}
+<section class="h-hero walk" data-walk aria-labelledby="hero-h">
+  <div class="walk-stage">
+    <picture class="h-hero-img walk-out">
+      <img src="{{ url_for('static', filename='img/hero-owner.webp') }}"
+           srcset="{{ url_for('static', filename='img/hero-owner-m.webp') }} 960w, {{ url_for('static', filename='img/hero-owner.webp') }} 1672w"
+           sizes="100vw" width="1672" height="941" alt="مالك سعودي يحمل مفتاح بيته الجديد أمام فيلا حديثة وقت الغروب" fetchpriority="high"
+           data-door-x="0.87" data-door-y="0.52">
+    </picture>
+    <picture class="walk-in" aria-hidden="true">
+      <img src="{{ url_for('static', filename='img/inside-majlis.webp') }}"
+           srcset="{{ url_for('static', filename='img/inside-majlis-m.webp') }} 960w, {{ url_for('static', filename='img/inside-majlis.webp') }} 1672w"
+           sizes="100vw" width="1672" height="941" alt="" loading="lazy" decoding="async">
+    </picture>
+    <div class="wrap h-hero-in">
+      <div class="h-panel walk-panel">
+        <h1 id="hero-h">من مخطط الأرض<br>إلى مفتاح البيت</h1>
+        <p class="h-lead">اكتب ما تحتاجه مرة واحدة. نرشّح لك أنسب ثلاثة مكاتب هندسية في مدينتك، وتتابع كل مرحلة برقم طلب واحد يصلك على واتساب.</p>
+        <form class="h-form" action="{{ url_for('new_request') }}" method="get">
+          <div><label for="q_type">ماذا تحتاج؟</label><select id="q_type" name="type">{% for t in types %}<option>{{ t }}</option>{% endfor %}</select></div>
+          <div><label for="q_city">في أي مدينة؟</label><select id="q_city" name="city">{% for c in cities %}<option>{{ c }}</option>{% endfor %}</select></div>
+          <button class="btn orange lg">ابدأ طلبك</button>
+        </form>
+        <p class="h-note">{{ stats.offices }} مكاتب هندسية في {{ cities|join(' و') }}، والرد على التسعير خلال 48 ساعة. <a href="{{ url_for('offices') }}">تصفح المكاتب</a></p>
+      </div>
+      <div class="h-panel walk-welcome">
+        <h2>أهلًا بك في بيتك</h2>
+        <p class="h-lead">هذه اللحظة تبدأ بطلب واحد: نختار معك المكتب الهندسي، ونتابع البناء مرحلة بمرحلة حتى تجلس في مجلسك.</p>
+        <a class="btn orange lg" href="{{ url_for('new_request') }}">ابدأ طلبك</a>
+      </div>
     </div>
+    <p class="walk-hint" aria-hidden="true"><span></span>مرّر لتدخل البيت</p>
   </div>
 </section>
 
@@ -38,19 +52,19 @@
   <h2 id="journey-h" class="h-title">كيف يسير مشروعك</h2>
   <ol class="h-steps">
     <li>
-      <img src="{{ url_for('static', filename='img/step-plan.webp') }}" width="1000" height="563" loading="lazy" decoding="async" alt="مهندس يرسم مخططًا معماريًا على طاولة">
+      <img src="{{ url_for('static', filename='img/step-office.webp') }}" width="1100" height="619" loading="lazy" decoding="async" style="object-position:72% 50%" alt="مالكة ومهندس يراجعان مخطط الفيلا في مكتب هندسي يطل على الرياض">
       <span class="h-step-n" aria-hidden="true">1</span>
       <h3>المخطط</h3>
       <p>تكتب كراسة متطلباتك: المدينة والمساحة والميزانية والطراز. نرشّح لك ثلاثة مكاتب، ونوضح سبب كل ترشيح.</p>
     </li>
     <li>
-      <img src="{{ url_for('static', filename='img/step-build.webp') }}" width="1000" height="662" loading="lazy" decoding="async" alt="عمال بخوذ وسترات برتقالية في موقع بناء بين حديد التسليح">
+      <img src="{{ url_for('static', filename='img/step-site.webp') }}" width="1100" height="619" loading="lazy" decoding="async" style="object-position:62% 50%" alt="المالك والمالكة مع مهندس الموقع يراجعون المخطط أمام البيت تحت الإنشاء">
       <span class="h-step-n" aria-hidden="true">2</span>
       <h3>البناء</h3>
       <p>يقدّم المكتب عرضه خلال 48 ساعة وتعتمده من لوحتك. كل تحديث على طلبك يصلك برسالة.</p>
     </li>
     <li>
-      <img src="{{ url_for('static', filename='img/step-furnish.webp') }}" width="1000" height="527" loading="lazy" decoding="async" alt="مجلس حديث مؤثث بكنب رمادي وإضاءة دافئة">
+      <img src="{{ url_for('static', filename='img/step-majlis.webp') }}" width="1100" height="619" loading="lazy" decoding="async" style="object-position:84% 50%" alt="زوجان يختاران أثاث مجلس بيتهما الجديد">
       <span class="h-step-n" aria-hidden="true">3</span>
       <h3>التأثيث</h3>
       <p>تستلم بيتك وتنتقل للتأثيث، ويبقى سجل مشروعك كاملًا محفوظًا برقم طلبك.</p>
@@ -115,3 +129,4 @@
   </div>
 </section>
 {% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/walk.js') }}" defer></script>{% endblock %}

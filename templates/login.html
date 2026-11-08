@@ -1,4 +1,4 @@
-{% extends '_auth.html' %}{% from '_ui.html' import illus with context %}
+{% extends '_auth.html' %}
 {% block title %}الدخول · بناء وتأثيث{% endblock %}
 {% block form %}
 <form method="post" class="stack">
@@ -10,4 +10,4 @@
   {% if demo %}<p class="demo">حسابات تجريبية (محليًا فقط): <span class="mono">admin · owner · developer · office · client</span> — كلمة المرور <span class="mono">123456</span></p>{% endif %}
 </form>
 {% endblock %}
-{% block aside %}{{ illus('owner') }}<h2>طلبك في مكان واحد</h2><p>تابع مراحل مشروعك، وراجع عروض المكاتب، واعتمدها من لوحتك.</p>{% endblock %}
+{% block aside %}<img src="{{ url_for('static', filename='img/hero-owner.webp') }}" width="1672" height="941" alt="" style="object-position:70% 50%"><div class="auth-cap"><h2>طلبك في مكان واحد</h2><p>تابع مراحل مشروعك، وراجع عروض المكاتب، واعتمدها من لوحتك.</p></div>{% endblock %}

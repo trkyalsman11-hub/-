@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-{% from '_ui.html' import illus with context %}
+{% from '_ui.html' import page_banner with context %}
 {% block title %}طلب جديد · بناء وتأثيث{% endblock %}
 {% block page_class %} narrow{% endblock %}
+{% block banner %}{{ page_banner('step-office', 'طلب جديد', 'ثلاث خطوات قصيرة. يصلك رقم الطلب ورسالة تأكيد على واتساب فور الإرسال.', '72% 50%') }}{% endblock %}
 {% block content %}
-<div><h1>طلب جديد</h1><p class="muted">يصلك رقم الطلب ورسالة تأكيد على واتساب فور الإرسال.</p></div>
 <ol class="steps" aria-label="خطوات الطلب" id="steps">
   <li class="on" aria-current="step">1. الخدمة والطراز</li><li>2. الموقع والميزانية</li><li>3. المتابعة والمراجعة</li>
 </ol>
