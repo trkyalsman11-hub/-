@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% from '_ui.html' import illus, office_card, stars with context %}
+{% block title %}بناء وتأثيث · منصة تربط المالك بالمكتب الهندسي والمقاول{% endblock %}
+{% block head_extra %}<script type="application/ld+json">{{ {
+  "@context": "https://schema.org", "@type": "Organization",
+  "name": "بناء وتأثيث", "alternateName": "منصة بناء وتأثيث",
+  "url": site_url() ~ "/", "slogan": "من المخطط إلى المفتاح",
+  "description": "منصة تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري، من كراسة المتطلبات حتى التأثيث.",
+  "areaServed": ["الرياض", "شقراء"],
+  "address": {"@type": "PostalAddress", "addressLocality": "الرياض", "addressCountry": "SA"}
+}|tojson }}</script>{% endblock %}
 {% block main %}
 <div class="wrap">
 <section class="hero">

@@ -3,7 +3,18 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{% block title %}بناء وتأثيث · من المخطط إلى المفتاح{% endblock %}</title>
-<meta name="description" content="منصة تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري، من كراسة المتطلبات حتى التأثيث.">
+{% set page_desc %}{% block description %}منصة بناء وتأثيث تربط المالك بالمكتب الهندسي والمقاول والمطور العقاري في الرياض وشقراء: كراسة متطلبات رقمية، ترشيح ذكي لأفضل 3 مكاتب، ورقم طلب تتابع به كل مرحلة عبر واتساب.{% endblock %}{% endset %}
+<meta name="description" content="{{ page_desc|trim }}">
+{% if session.user_id or request.endpoint not in ('index','offices','track','register') or request.args or response_status is defined %}<meta name="robots" content="noindex, nofollow">{% else %}<link rel="canonical" href="{{ site_url() }}{{ request.path }}">{% endif %}
+{% if google_verification %}<meta name="google-site-verification" content="{{ google_verification }}">{% endif %}
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:site_name" content="بناء وتأثيث">
+<meta property="og:title" content="{{ self.title()|trim }}">
+<meta property="og:description" content="{{ page_desc|trim }}">
+<meta property="og:url" content="{{ site_url() }}{{ request.path }}">
+<meta name="twitter:card" content="summary">
+{% block head_extra %}{% endblock %}
 <meta name="theme-color" content="#0F1E33">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230F1E33'/%3E%3Cpath d='M10 30V10h20v20h-7M10 19h9' stroke='%23fff' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M23 30a9 9 0 0 0-9-9' stroke='%23E8833A' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

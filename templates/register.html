@@ -1,5 +1,6 @@
 {% extends '_auth.html' %}{% from '_ui.html' import illus with context %}
 {% block title %}حساب جديد · بناء وتأثيث{% endblock %}
+{% block description %}أنشئ حسابك في منصة بناء وتأثيث كمالك أو مطور عقاري أو مكتب هندسي، وابدأ طلبك برقم مرجعي واحد.{% endblock %}
 {% set sel = request.form.role or request.args.get('role') or 'owner' %}
 {% set roles = [('owner','مالك','owner'),('client','عميل','furnish'),('developer','مطور عقاري','developer'),('office','مكتب هندسي','office')] %}
 {% block form %}

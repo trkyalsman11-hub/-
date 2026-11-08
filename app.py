@@ -300,6 +300,38 @@ def logout():
 
 
 # ───────────────────────── الصفحات ─────────────────────────
+# ───────────────────────── محركات البحث ─────────────────────────
+PUBLIC_PAGES = ["index", "offices", "track", "register"]   # الصفحات التي تظهر في جوجل
+PRIVATE_PATHS = ["/home", "/requests/", "/dashboard", "/users", "/logout"]
+
+
+def site_url():
+    """عنوان الموقع الأساسي: SITE_URL إن وُجد، وإلا من الطلب الحالي (ProxyFix يضبط https)."""
+    return (os.environ.get("SITE_URL") or request.url_root).rstrip("/")
+
+
+app.jinja_env.globals.update(site_url=site_url,
+                             google_verification=os.environ.get("GOOGLE_SITE_VERIFICATION", ""))
+
+
+@app.route("/robots.txt")
+def robots():
+    lines = ["User-agent: *", "Allow: /"] + [f"Disallow: {p}" for p in PRIVATE_PATHS] + \
+            ["", f"Sitemap: {site_url()}/sitemap.xml", ""]
+    return app.response_class("\n".join(lines), mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    today = datetime.now(TZ).strftime("%Y-%m-%d")
+    urls = "".join(
+        f"<url><loc>{site_url()}{url_for(ep)}</loc><lastmod>{today}</lastmod>"
+        f"<priority>{'1.0' if ep == 'index' else '0.7'}</priority></url>" for ep in PUBLIC_PAGES)
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>'
+           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>')
+    return app.response_class(xml, mimetype="application/xml")
+
+
 @app.route("/healthz")
 def healthz():
     db().execute("SELECT 1").fetchone()
