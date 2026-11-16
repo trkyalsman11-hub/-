@@ -6,7 +6,7 @@
   <div><label for="username">اسم المستخدم</label><input id="username" name="username" required autocomplete="username" dir="ltr" autofocus value="{{ request.form.username }}"></div>
   <div><label for="password">كلمة المرور</label><input id="password" type="password" name="password" required autocomplete="current-password" dir="ltr"></div>
   <button class="btn lg block">دخول</button>
-  <p class="muted">ما عندك حساب؟ <a href="{{ url_for('register') }}">أنشئ حسابًا جديدًا</a></p>
+  <p class="muted login-links"><a href="{{ url_for('forgot') }}">نسيت كلمة المرور؟</a><span>ما عندك حساب؟ <a href="{{ url_for('register') }}">أنشئ حسابًا</a></span></p>
   {% if demo %}<p class="demo">حسابات تجريبية (محليًا فقط): <span class="mono">admin · owner · developer · office · client</span> — كلمة المرور <span class="mono">123456</span></p>{% endif %}
 </form>
 {% endblock %}

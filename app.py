@@ -6,7 +6,11 @@
 
 الإنتاج (Render): يقرأ DATABASE_URL ويعمل على PostgreSQL تلقائيًا.
 """
+import hashlib
+import hmac
 import os
+import secrets
+import time
 from datetime import datetime
 from functools import wraps
 from zoneinfo import ZoneInfo
@@ -265,16 +269,210 @@ def safe_next(target):
     return target if target and target.startswith("/") and not target.startswith("//") else None
 
 
+# ───────────────────────── رمز التحقق (OTP) ─────────────────────────
+OTP_TTL = 300            # صلاحية الرمز: 5 دقائق
+OTP_MAX_ATTEMPTS = 5     # محاولات إدخال لكل رمز
+OTP_RESEND_WAIT = 60     # ثوانٍ بين كل إرسال وآخر
+OTP_MAX_PER_HOUR = 5     # أقصى عدد رموز في الساعة لكل مستخدم وغرض
+OTP_PENDING_TTL = 600    # مهلة إكمال خطوة التحقق بعد كلمة المرور
+
+
+def otp_provider_live():
+    return os.environ.get("NOTIFY_PROVIDER", "console").lower() != "console"
+
+
+def otp_enabled():
+    """OTP_MODE: on | off | auto (الافتراضي).
+    في auto يعمل محليًا دائمًا، وفي الإنتاج فقط إذا رُبط مزود رسائل حقيقي — حتى لا يُقفل الدخول على الجميع."""
+    mode = os.environ.get("OTP_MODE", "auto").lower()
+    if mode in ("on", "off"):
+        return mode == "on"
+    return otp_provider_live() or not PRODUCTION
+
+
+def otp_demo():
+    """محليًا بلا مزود رسائل: نعرض الرمز على الصفحة للتجربة فقط. لا يحدث في الإنتاج أبدًا."""
+    return not PRODUCTION and not otp_provider_live()
+
+
+def otp_hash(uid, purpose, code):
+    return hmac.new(app.secret_key.encode(), f"{uid}:{purpose}:{code}".encode(), hashlib.sha256).hexdigest()
+
+
+def mask_phone(phone):
+    p = (phone or "").strip()
+    return f"{p[:2]}•••••{p[-4:]}" if len(p) >= 6 else "الجوال المسجّل"
+
+
+def otp_issue(user, purpose):
+    """ينشئ رمزًا من 6 أرقام ويرسله لجوال المستخدم. يعيد (نجح؟, رسالة الخطأ)."""
+    t = int(time.time())
+    q = db().execute("SELECT COUNT(*), MAX(created_at) FROM otp_codes WHERE user_id=? AND purpose=? AND created_at>?",
+                     (user["id"], purpose, t - 3600)).fetchone()
+    count, last = q[0] or 0, q[1] or 0
+    if count >= OTP_MAX_PER_HOUR:
+        return False, "تجاوزت عدد الرموز المسموح في الساعة. حاول بعد ساعة."
+    if last and t - last < OTP_RESEND_WAIT:
+        return False, f"انتظر {OTP_RESEND_WAIT - (t - last)} ثانية قبل طلب رمز جديد."
+    code = f"{secrets.randbelow(10**6):06d}"
+    db().execute("UPDATE otp_codes SET used=1 WHERE user_id=? AND purpose=? AND used=0", (user["id"], purpose))
+    db().execute("INSERT INTO otp_codes (user_id,purpose,code_hash,expires_at,attempts,used,created_at) VALUES (?,?,?,?,0,0,?)",
+                 (user["id"], purpose, otp_hash(user["id"], purpose, code), t + OTP_TTL, t))
+    db().commit()
+    msg = f"رمز التحقق لمنصة بناء وتأثيث: {code}\nصالح 5 دقائق. لا تشاركه مع أي أحد."
+    ok, detail = notifications.send(user["phone"], msg, os.environ.get("OTP_CHANNEL", "sms"))
+    if not ok:
+        return False, "تعذّر إرسال الرمز إلى جوالك. حاول لاحقًا أو تواصل مع إدارة المنصة."
+    if otp_demo():
+        session["otp_demo_code"] = code
+    return True, ""
+
+
+def otp_check(uid, purpose, code):
+    """يتحقق من الرمز. يعيد (صحيح؟, رسالة)."""
+    row = db().execute("SELECT * FROM otp_codes WHERE user_id=? AND purpose=? AND used=0 ORDER BY id DESC LIMIT 1",
+                       (uid, purpose)).fetchone() if uid else None
+    if not row or row["expires_at"] < int(time.time()):
+        return False, "انتهت صلاحية الرمز أو لا يوجد رمز. اطلب رمزًا جديدًا."
+    if row["attempts"] >= OTP_MAX_ATTEMPTS:
+        db().execute("UPDATE otp_codes SET used=1 WHERE id=?", (row["id"],)); db().commit()
+        return False, "تجاوزت عدد المحاولات. اطلب رمزًا جديدًا."
+    if not hmac.compare_digest(row["code_hash"], otp_hash(uid, purpose, (code or "").strip())):
+        db().execute("UPDATE otp_codes SET attempts=attempts+1 WHERE id=?", (row["id"],)); db().commit()
+        left = OTP_MAX_ATTEMPTS - row["attempts"] - 1
+        return False, f"الرمز غير صحيح. المحاولات المتبقية: {left}." if left > 0 else "الرمز غير صحيح. اطلب رمزًا جديدًا."
+    db().execute("UPDATE otp_codes SET used=1 WHERE id=?", (row["id"],)); db().commit()
+    session.pop("otp_demo_code", None)
+    return True, ""
+
+
+def finish_login(u, nxt=None):
+    session.clear()
+    session.update(user_id=u["id"], role=u["role"])
+    return redirect(safe_next(nxt) or url_for("home"))
+
+
+app.jinja_env.globals.update(otp_enabled=otp_enabled)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         u = db().execute("SELECT * FROM users WHERE username=?", (request.form["username"].strip(),)).fetchone()
         if u and check_password_hash(u["password"], request.form["password"]):
-            session.clear()
-            session.update(user_id=u["id"], role=u["role"])
-            return redirect(safe_next(request.args.get("next")) or url_for("home"))
+            nxt = request.args.get("next")
+            if otp_enabled() and (u["phone"] or "").strip():
+                session.clear()
+                ok, err = otp_issue(u, "login")
+                if not ok:
+                    flash(err, "error")
+                    return render_template("login.html", demo=not PRODUCTION or os.environ.get("DEMO_USERS") == "1")
+                session["otp_login"] = {"uid": u["id"], "next": safe_next(nxt), "t": int(time.time())}
+                return redirect(url_for("login_verify"))
+            resp = finish_login(u, nxt)
+            if otp_enabled():
+                flash("حسابك بلا رقم جوال، فلم نتمكن من إرسال رمز التحقق. أضف رقمك من إدارة المنصة.", "error")
+            return resp
         flash("اسم المستخدم أو كلمة المرور غير صحيحة", "error")
     return render_template("login.html", demo=not PRODUCTION or os.environ.get("DEMO_USERS") == "1")
+
+
+def pending_login_user():
+    p = session.get("otp_login")
+    if not p or int(time.time()) - p.get("t", 0) > OTP_PENDING_TTL:
+        return None, None
+    return db().execute("SELECT * FROM users WHERE id=?", (p["uid"],)).fetchone(), p
+
+
+@app.route("/login/verify", methods=["GET", "POST"])
+def login_verify():
+    u, p = pending_login_user()
+    if not u:
+        flash("انتهت مهلة التحقق. سجّل دخولك من جديد.", "error")
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        if request.form.get("action") == "resend":
+            ok, err = otp_issue(u, "login")
+            flash("أرسلنا رمزًا جديدًا." if ok else err, "ok" if ok else "error")
+            return redirect(url_for("login_verify"))
+        ok, err = otp_check(u["id"], "login", request.form.get("code"))
+        if ok:
+            return finish_login(u, p.get("next"))
+        flash(err, "error")
+    return render_template("otp_verify.html", purpose="login", phone=mask_phone(u["phone"]),
+                           demo_code=session.get("otp_demo_code") if otp_demo() else None)
+
+
+@app.route("/forgot", methods=["GET", "POST"])
+def forgot():
+    """استرجاع كلمة المرور برمز يُرسل للجوال المسجّل. الرد واحد سواء وُجد الحساب أم لا."""
+    if not otp_enabled():
+        return render_template("forgot.html", disabled=True)
+    if request.method == "POST":
+        ident = request.form.get("ident", "").strip()
+        u = db().execute("SELECT * FROM users WHERE username=?", (ident,)).fetchone()
+        if not u and ident:
+            rows = db().execute("SELECT * FROM users WHERE phone=?", (ident,)).fetchall()
+            u = rows[0] if len(rows) == 1 else None
+        session.pop("otp_reset", None)
+        if u and (u["phone"] or "").strip():
+            ok, err = otp_issue(u, "reset")
+            if not ok and "انتظر" in err or not ok and "تجاوزت" in err:
+                flash(err, "error")
+                return render_template("forgot.html", disabled=False)
+        session["otp_reset"] = {"uid": u["id"] if u else None, "t": int(time.time()),
+                                "phone": mask_phone(u["phone"]) if u else "الجوال المسجّل"}
+        flash("إذا كان الحساب موجودًا فقد أرسلنا رمز التحقق إلى الجوال المسجّل فيه.", "ok")
+        return redirect(url_for("forgot_verify"))
+    return render_template("forgot.html", disabled=False)
+
+
+@app.route("/password/change")
+@login_required
+def change_password():
+    """تغيير كلمة المرور من داخل الحساب: نرسل رمزًا لجوال المستخدم ثم ننقله لصفحة الرمز."""
+    if not otp_enabled():
+        return render_template("forgot.html", disabled=True)
+    u = current_user()
+    if not (u["phone"] or "").strip():
+        flash("لا يوجد رقم جوال في حسابك. تواصل مع إدارة المنصة لإضافته.", "error")
+        return redirect(url_for("home"))
+    ok, err = otp_issue(u, "reset")
+    if not ok:
+        flash(err, "error")
+        return redirect(url_for("home"))
+    session["otp_reset"] = {"uid": u["id"], "t": int(time.time()), "phone": mask_phone(u["phone"])}
+    return redirect(url_for("forgot_verify"))
+
+
+@app.route("/forgot/verify", methods=["GET", "POST"])
+def forgot_verify():
+    p = session.get("otp_reset")
+    if not p or int(time.time()) - p.get("t", 0) > OTP_PENDING_TTL:
+        flash("انتهت المهلة. اطلب رمزًا جديدًا.", "error")
+        return redirect(url_for("forgot"))
+    if request.method == "POST":
+        if request.form.get("action") == "resend":
+            u = db().execute("SELECT * FROM users WHERE id=?", (p["uid"],)).fetchone() if p["uid"] else None
+            ok, err = otp_issue(u, "reset") if u else (True, "")
+            flash("إذا كان الحساب موجودًا فقد أرسلنا رمزًا جديدًا." if ok else err, "ok" if ok else "error")
+            return redirect(url_for("forgot_verify"))
+        pw, pw2 = request.form.get("password", ""), request.form.get("password2", "")
+        if len(pw) < 6:
+            flash("كلمة المرور 6 أحرف على الأقل.", "error")
+        elif pw != pw2:
+            flash("كلمتا المرور غير متطابقتين.", "error")
+        else:
+            ok, err = otp_check(p["uid"], "reset", request.form.get("code"))
+            if ok:
+                db().execute("UPDATE users SET password=? WHERE id=?", (generate_password_hash(pw), p["uid"]))
+                db().commit()
+                session.clear()
+                flash("تم تغيير كلمة المرور. سجّل دخولك بالكلمة الجديدة.", "ok")
+                return redirect(url_for("login"))
+            flash(err, "error")
+    return render_template("otp_verify.html", purpose="reset", phone=p.get("phone"),
+                           demo_code=session.get("otp_demo_code") if otp_demo() else None)
 
 
 @app.route("/register", methods=["GET", "POST"])
