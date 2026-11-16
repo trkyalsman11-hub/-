@@ -1,0 +1,18 @@
+{% extends '_auth.html' %}
+{% block title %}نسيت كلمة المرور · بناء وتأثيث{% endblock %}
+{% block form %}
+<div class="stack">
+  <h1 style="font-size:30px">نسيت كلمة المرور؟</h1>
+  {% if disabled %}
+  <p class="muted">استرجاع كلمة المرور برمز على الجوال غير مفعّل بعد. تواصل مع إدارة المنصة على <a href="mailto:bina.eamar@gmail.com" dir="ltr">bina.eamar@gmail.com</a> لتغييرها.</p>
+  {% else %}
+  <p class="muted">اكتب اسم المستخدم أو رقم جوالك، ونرسل رمز تحقق إلى الجوال المسجّل في حسابك.</p>
+  <form method="post" class="stack">
+    <div><label for="ident">اسم المستخدم أو رقم الجوال</label><input id="ident" name="ident" required dir="ltr" autocomplete="username" autofocus></div>
+    <button class="btn lg block">أرسل الرمز</button>
+  </form>
+  {% endif %}
+  <p class="muted"><a href="{{ url_for('login') }}">العودة لتسجيل الدخول</a></p>
+</div>
+{% endblock %}
+{% block aside %}<img src="{{ url_for('static', filename='img/hero-owner.webp') }}" width="1672" height="941" alt="" style="object-position:70% 50%"><div class="auth-cap"><h2>نرجعك لحسابك</h2><p>رمز واحد على جوالك المسجّل، وتختار كلمة مرور جديدة.</p></div>{% endblock %}

@@ -538,3 +538,8 @@ h2.big{font-size:clamp(1.6rem,3.2vw,2.1rem);margin-top:4px}
     @keyframes story-in{from{transform:scale(1.12)}to{transform:none}}
   }
 }
+
+/* رمز التحقق */
+.otp-in{font-size:26px!important;letter-spacing:10px;text-align:center!important;min-height:58px}
+.otp-resend{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:var(--stone)}
+.login-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}

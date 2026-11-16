@@ -1,0 +1,19 @@
+{% extends '_auth.html' %}
+{% block title %}{{ 'رمز التحقق' if purpose=='login' else 'تغيير كلمة المرور' }} · بناء وتأثيث{% endblock %}
+{% block form %}
+<form method="post" class="stack" id="otpForm" autocomplete="off">
+  <h1 style="font-size:30px">{{ 'أدخل رمز التحقق' if purpose=='login' else 'كلمة مرور جديدة' }}</h1>
+  <p class="muted">أرسلنا رمزًا من 6 أرقام إلى <span class="mono">{{ phone }}</span>. الرمز صالح 5 دقائق.</p>
+  {% if demo_code %}<p class="demo">وضع التجربة المحلي (بدون مزود رسائل): الرمز هو <b class="mono">{{ demo_code }}</b>. لا يظهر هذا في الموقع المنشور.</p>{% endif %}
+  <div><label for="code">رمز التحقق</label>
+    <input id="code" name="code" class="mono-in otp-in" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required dir="ltr" autofocus placeholder="••••••"></div>
+  {% if purpose=='reset' %}
+  <div><label for="password">كلمة المرور الجديدة</label><input id="password" name="password" type="password" minlength="6" required dir="ltr" autocomplete="new-password"><p class="hint">6 أحرف على الأقل</p></div>
+  <div><label for="password2">أعد كتابة كلمة المرور</label><input id="password2" name="password2" type="password" minlength="6" required dir="ltr" autocomplete="new-password"></div>
+  {% endif %}
+  <button class="btn lg block">{{ 'تأكيد الدخول' if purpose=='login' else 'حفظ كلمة المرور' }}</button>
+</form>
+<form method="post" class="otp-resend"><input type="hidden" name="action" value="resend"><span class="muted">ما وصلك الرمز؟</span><button class="btn ghost sm" formnovalidate>إرسال رمز جديد</button></form>
+<p class="muted"><a href="{{ url_for('login') }}">العودة لتسجيل الدخول</a></p>
+{% endblock %}
+{% block aside %}<img src="{{ url_for('static', filename='img/hero-owner.webp') }}" width="1672" height="941" alt="" style="object-position:70% 50%"><div class="auth-cap"><h2>حسابك محمي</h2><p>نتحقق أنك صاحب الحساب برمز يصل إلى جوالك، حتى لو عرف أحد كلمة مرورك.</p></div>{% endblock %}

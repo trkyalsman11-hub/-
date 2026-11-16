@@ -76,6 +76,17 @@ CREATE TABLE IF NOT EXISTS notifications (
     detail TEXT,
     created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS otp_codes (
+    id {PK},
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    purpose TEXT NOT NULL,
+    code_hash TEXT NOT NULL,
+    expires_at INTEGER NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    used INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_otp_user ON otp_codes(user_id, purpose);
 CREATE INDEX IF NOT EXISTS idx_requests_created_by ON requests(created_by);
 CREATE INDEX IF NOT EXISTS idx_requests_office ON requests(office_id);
 CREATE INDEX IF NOT EXISTS idx_updates_request ON request_updates(request_id);
