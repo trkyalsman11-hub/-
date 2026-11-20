@@ -319,9 +319,11 @@ def otp_issue(user, purpose):
     db().execute("INSERT INTO otp_codes (user_id,purpose,code_hash,expires_at,attempts,used,created_at) VALUES (?,?,?,?,0,0,?)",
                  (user["id"], purpose, otp_hash(user["id"], purpose, code), t + OTP_TTL, t))
     db().commit()
-    msg = f"رمز التحقق لمنصة بناء وتأثيث: {code}\nصالح 5 دقائق. لا تشاركه مع أي أحد."
+    # أقل من 70 حرفًا عربيًا = رسالة SMS واحدة (أطول من ذلك تُحسب رسالتين)
+    msg = f"رمز التحقق: {code}\nبناء وتأثيث. صالح 5 دقائق، لا تشاركه."
     ok, detail = notifications.send(user["phone"], msg, os.environ.get("OTP_CHANNEL", "sms"))
     if not ok:
+        print(f"[OTP] send failed for user {user['id']}: {detail}", flush=True)   # يظهر في Logs على Render
         return False, "تعذّر إرسال الرمز إلى جوالك. حاول لاحقًا أو تواصل مع إدارة المنصة."
     if otp_demo():
         session["otp_demo_code"] = code
