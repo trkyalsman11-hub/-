@@ -8,6 +8,7 @@
 import base64
 import json
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -62,10 +63,24 @@ def _twilio(to, message, channel):
 
 
 def _unifonic(to, message):
+    """REST API من Unifonic (docs.unifonic.com: SMS: Sending via API).
+    النجاح يُعرف من الحقل success في رد JSON، لا من رمز HTTP وحده."""
     data = urllib.parse.urlencode({
         "AppSid": os.environ["UNIFONIC_APP_SID"], "SenderID": os.environ["UNIFONIC_SENDER"],
-        "Recipient": to, "Body": message,
+        "Recipient": to, "Body": message, "responseType": "JSON", "async": "false",
     }).encode()
     req = urllib.request.Request("https://el.cloud.unifonic.com/rest/SMS/messages", data=data)
-    with urllib.request.urlopen(req, timeout=15) as r:
-        return r.status < 300, r.read().decode()[:200]
+    req.add_header("Accept", "application/json")
+    req.add_header("Content-Type", "application/x-www-form-urlencoded")
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            body = r.read().decode("utf-8", "replace")
+    except urllib.error.HTTPError as e:   # 4xx من Unifonic تحمل سبب الرفض في الرد
+        body = e.read().decode("utf-8", "replace")
+    try:
+        res = json.loads(body)
+    except ValueError:
+        return False, body[:200]
+    if res.get("success"):
+        return True, str((res.get("data") or {}).get("MessageID", ""))
+    return False, f"{res.get('errorCode', '')} {res.get('message', '')}".strip()[:200]

@@ -80,7 +80,7 @@
     </div>
     <div class="card stack" style="gap:10px">
       <h2 style="font-size:18px">سجل الإشعارات</h2>
-      {% for n in notes %}<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--stone);font-size:14px"><span class="mono">{{ n.created_at }}</span><span>{{ 'واتساب' if n.channel=='whatsapp' else 'SMS' }}</span>{% if n.success %}<span class="pill s-done">أُرسل</span>{% else %}<span class="pill s-bad" title="{{ n.detail }}">لم يُرسل</span>{% endif %}</div>{% endfor %}
+      {% for n in notes %}<div style="padding:8px 12px;border-radius:12px;background:var(--stone);font-size:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span class="mono">{{ n.created_at }}</span><span>{{ 'واتساب' if n.channel=='whatsapp' else 'SMS' }}</span>{% if n.success %}<span class="pill s-done">أُرسل</span>{% else %}<span class="pill s-bad">لم يُرسل</span>{% endif %}</div>{% if not n.success and n.detail %}<div class="muted" style="font-size:12.5px;margin-top:4px" dir="ltr">{{ n.detail }}</div>{% endif %}</div>{% endfor %}
     </div>
     {% endif %}
   </aside>
